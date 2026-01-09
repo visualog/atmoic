@@ -11,44 +11,51 @@ export default function LivePreview() {
                 <div
                     className="h-16 flex items-center justify-between px-4 border-b"
                     style={{
-                        backgroundColor: 'var(--white, #ffffff)',
-                        borderColor: 'var(--neutral-200, #e5e7eb)'
+                        backgroundColor: 'var(--neutral-1, #ffffff)',
+                        borderColor: 'var(--neutral-6, #e5e7eb)'
                     }}
                 >
                     <div className="flex items-center gap-3">
                         <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
-                            style={{ backgroundColor: 'var(--primary-600, #2563eb)' }}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center"
+                            style={{
+                                backgroundColor: 'var(--primary-9, #3b82f6)',
+                                color: 'var(--primary-foreground, #ffffff)'
+                            }}
                         >
                             <span className="font-bold text-sm">A</span>
                         </div>
-                        <span className="font-bold text-gray-800">Dashboard</span>
+                        <span className="font-bold" style={{ color: 'var(--neutral-12, #1f2937)' }}>Dashboard</span>
                     </div>
-                    <div className="flex gap-2 text-gray-400">
+                    <div className="flex gap-2" style={{ color: 'var(--neutral-11, #9ca3af)' }}>
                         <Search className="w-5 h-5" />
                         <Bell className="w-5 h-5" />
-                        <div className="w-6 h-6 rounded-full bg-gray-200 overflow-hidden">
-                            <User className="w-full h-full p-1 text-gray-500" />
+                        <div className="w-6 h-6 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--neutral-3, #e5e7eb)' }}>
+                            <User className="w-full h-full p-1" style={{ color: 'var(--neutral-11, #6b7280)' }} />
                         </div>
                     </div>
                 </div>
 
                 {/* App Content */}
-                <div className="p-6 space-y-6 bg-gray-50/50">
+                <div className="p-6 space-y-6" style={{ backgroundColor: 'var(--neutral-2, #f9fafb)' }}>
 
                     {/* Hero Card */}
                     <div
-                        className="rounded-xl p-6 text-white shadow-md relative overflow-hidden"
+                        className="rounded-xl p-6 shadow-md relative overflow-hidden"
                         style={{
-                            background: `linear-gradient(135deg, var(--primary-500, #3b82f6), var(--primary-700, #1d4ed8))`
+                            background: `linear-gradient(135deg, var(--primary-9, #3b82f6), var(--primary-10, #1d4ed8))`,
+                            color: 'var(--primary-foreground, #ffffff)'
                         }}
                     >
                         <div className="relative z-10">
                             <h3 className="font-bold text-lg mb-1">Welcome back, Designer!</h3>
-                            <p className="text-blue-100 text-sm mb-4">You have 3 pending tasks today.</p>
+                            <p style={{ color: 'var(--primary-foreground, #ffffff)', opacity: 0.9 }} className="text-sm mb-4">You have 3 pending tasks today.</p>
                             <button
-                                className="px-4 py-2 bg-white text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-                                style={{ color: 'var(--primary-600, #2563eb)' }}
+                                className="px-4 py-2 text-sm font-semibold rounded-lg shadow-sm transition-colors hover:opacity-90"
+                                style={{
+                                    backgroundColor: 'var(--neutral-1, #ffffff)',
+                                    color: 'var(--primary-11, #2563eb)'
+                                }}
                             >
                                 View Tasks
                             </button>
@@ -68,10 +75,17 @@ export default function LivePreview() {
                             <button
                                 key={i}
                                 className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors border ${btn.active
-                                        ? 'text-white border-transparent'
-                                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                                    ? 'border-transparent'
+                                    : 'hover:opacity-80'
                                     }`}
-                                style={btn.active ? { backgroundColor: 'var(--primary-500, #3b82f6)' } : {}}
+                                style={btn.active ? {
+                                    backgroundColor: 'var(--primary-9, #3b82f6)',
+                                    color: 'var(--primary-foreground, #ffffff)'
+                                } : {
+                                    backgroundColor: 'var(--neutral-1, #ffffff)',
+                                    color: 'var(--neutral-11, #4b5563)',
+                                    borderColor: 'var(--neutral-6, #e5e7eb)'
+                                }}
                             >
                                 {btn.label}
                             </button>
@@ -89,7 +103,7 @@ export default function LivePreview() {
                                 placeholder="Enter project name..."
                                 className="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:bg-white transition-all outline-none ring-2 ring-transparent focus:ring-opacity-20"
                                 style={{
-                                    borderColor: 'var(--neutral-200, #e5e7eb)',
+                                    borderColor: 'var(--neutral-6, #e5e7eb)',
                                     // We simulate focus color using a CSS variable if possible, but hard to do inline without state
                                 }}
                             />
@@ -100,11 +114,11 @@ export default function LivePreview() {
                                 <div
                                     className="w-5 h-5 rounded border flex items-center justify-center transition-colors"
                                     style={{
-                                        borderColor: 'var(--primary-500, #3b82f6)',
-                                        backgroundColor: 'var(--primary-500, #3b82f6)'
+                                        borderColor: 'var(--primary-9, #3b82f6)',
+                                        backgroundColor: 'var(--primary-9, #3b82f6)'
                                     }}
                                 >
-                                    <Check className="w-3.5 h-3.5 text-white" />
+                                    <Check className="w-3.5 h-3.5" style={{ color: 'var(--primary-foreground, #ffffff)' }} />
                                 </div>
                                 Notifications
                             </label>
@@ -119,11 +133,16 @@ export default function LivePreview() {
 
             {/* Floating Badge (Simulation) */}
             <div
-                className="absolute bottom-6 right-6 px-4 py-2 bg-white rounded-full shadow-lg border border-gray-100 flex items-center gap-2 text-sm font-semibold text-gray-700 animate-bounce"
+                className="absolute bottom-6 right-6 px-4 py-2 rounded-full shadow-lg border flex items-center gap-2 text-sm font-semibold"
+                style={{
+                    backgroundColor: 'var(--neutral-1, #ffffff)',
+                    borderColor: 'var(--neutral-6, #e5e7eb)',
+                    color: 'var(--neutral-12, #374151)'
+                }}
             >
                 <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                Live Preview
+                Live
             </div>
-        </div>
+        </div >
     );
 }

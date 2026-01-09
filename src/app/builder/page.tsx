@@ -126,8 +126,8 @@ export default function BuilderPage() {
                 </div>
 
                 {/* 1. Brand Color Selection */}
-                <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col gap-10">
+                    <h3 className="text-lg font-bold text-gray-900">
                         Brand
                     </h3>
                     <div className="grid grid-cols-6 sm:grid-cols-11 gap-2">
@@ -141,8 +141,10 @@ export default function BuilderPage() {
                                     key={color}
                                     onClick={() => setSelectedBrand(color)}
                                     className={clsx(
-                                        "w-full aspect-square rounded-full border-2 transition-all relative group",
-                                        isSelected ? "border-gray-900 scale-110" : "border-transparent hover:scale-110"
+                                        "w-full aspect-square transition-all duration-300 relative group",
+                                        isSelected
+                                            ? "rounded-2xl scale-110 shadow-sm"
+                                            : "rounded-full hover:scale-110"
                                     )}
                                     style={{ backgroundColor: mainColor }}
                                     title={color}
@@ -153,15 +155,12 @@ export default function BuilderPage() {
                         })}
                     </div>
 
-                    <div className="mt-6 border-t pt-6">
-                        <h4 className="text-sm font-bold text-gray-900 mb-3">Scale</h4>
-                        <ScaleVisualizer scale={brandScale} colorName="Primary" />
-                    </div>
+                    <ScaleVisualizer scale={brandScale} colorName="Primary" />
                 </section>
 
                 {/* 2. Neutral Color Selection */}
-                <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col gap-10">
+                    <h3 className="text-lg font-bold text-gray-900">
                         Neutral
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -201,10 +200,7 @@ export default function BuilderPage() {
                         })}
                     </div>
 
-                    <div className="mt-6 border-t pt-6">
-                        <h4 className="text-sm font-bold text-gray-900 mb-3">Scale</h4>
-                        <ScaleVisualizer scale={neutralScale} colorName="Neutral" />
-                    </div>
+                    <ScaleVisualizer scale={neutralScale} colorName="Neutral" />
                 </section>
 
                 {/* 3. Action */}
