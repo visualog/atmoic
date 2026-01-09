@@ -155,7 +155,7 @@ export default function BuilderPage() {
                     </div>
 
                     <div className="mt-6 border-t pt-6">
-                        <h4 className="text-xs font-semibold text-gray-500 mb-3 uppercase">Selected Primary Scale</h4>
+                        <h4 className="text-sm font-bold text-gray-900 mb-3">Primary Scale</h4>
                         <ScaleVisualizer scale={brandScale} colorName="Primary" />
                     </div>
                 </section>
@@ -203,7 +203,7 @@ export default function BuilderPage() {
                     </div>
 
                     <div className="mt-6 border-t pt-6">
-                        <h4 className="text-xs font-semibold text-gray-500 mb-3 uppercase">Selected Neutral Scale</h4>
+                        <h4 className="text-sm font-bold text-gray-900 mb-3">Neutral Scale</h4>
                         <ScaleVisualizer scale={neutralScale} colorName="Neutral" />
                     </div>
                 </section>
