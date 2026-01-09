@@ -138,18 +138,5 @@ export default function LivePreview() {
                 </div>
             </div>
 
-            {/* Floating Badge (Simulation) */}
-            <div
-                className="absolute bottom-6 right-6 px-4 py-2 rounded-full shadow-lg border flex items-center gap-2 text-sm font-semibold"
-                style={{
-                    backgroundColor: 'var(--neutral-1, #ffffff)',
-                    borderColor: 'var(--neutral-6, #e5e7eb)',
-                    color: 'var(--neutral-12, #374151)'
-                }}
-            >
-                <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                Live
-            </div>
-        </div >
-    );
+            );
 }
