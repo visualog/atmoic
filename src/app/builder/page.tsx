@@ -277,7 +277,8 @@ export default function BuilderPage() {
             <div className="lg:col-span-5">
                 <div className="sticky top-8 space-y-4">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide">
+                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
                             Live
                         </h3>
                     </div>
