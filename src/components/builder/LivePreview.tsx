@@ -107,10 +107,11 @@ export default function LivePreview() {
                             <input
                                 type="text"
                                 placeholder="Enter project name..."
-                                className="w-full px-3 py-2 border rounded-lg text-sm bg-gray-50 focus:bg-white transition-all outline-none ring-2 ring-transparent focus:ring-opacity-20"
+                                className="w-full px-3 py-2 border rounded-lg text-sm transition-all outline-none ring-2 ring-transparent focus:ring-opacity-20 placeholder:text-[var(--neutral-9)]"
                                 style={{
+                                    backgroundColor: 'var(--neutral-2, #f9fafb)',
                                     borderColor: 'var(--neutral-6, #e5e7eb)',
-                                    // We simulate focus color using a CSS variable if possible, but hard to do inline without state
+                                    color: 'var(--neutral-12, #111827)'
                                 }}
                             />
                         </div>
