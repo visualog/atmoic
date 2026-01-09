@@ -47,7 +47,7 @@ export default function ScaleVisualizer({ scale, colorName }: ScaleVisualizerPro
                             className="flex-1 h-full flex items-end justify-center pb-2 group relative"
                             style={{ backgroundColor: value }}
                         >
-                            <div className="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded shadow-lg transition-opacity z-10 whitespace-nowrap">
+                            <div className="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded transition-opacity z-10 whitespace-nowrap">
                                 {colorName}{i + 1}: {value}
                             </div>
                         </div>

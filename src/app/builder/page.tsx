@@ -143,7 +143,7 @@ export default function BuilderPage() {
                                     onClick={() => setSelectedBrand(color)}
                                     className={clsx(
                                         "w-full aspect-square rounded-full border-2 transition-all relative group",
-                                        isSelected ? "border-gray-900 scale-110 shadow-md" : "border-transparent hover:scale-110 hover:shadow-sm"
+                                        isSelected ? "border-gray-900 scale-110" : "border-transparent hover:scale-110"
                                     )}
                                     style={{ backgroundColor: mainColor }}
                                     title={color}
@@ -192,7 +192,7 @@ export default function BuilderPage() {
                                             BEST
                                         </span>
                                     )}
-                                    <div className="w-10 h-10 rounded-full shadow-inner flex-shrink-0" style={{ backgroundColor: mainColor }} />
+                                    <div className="w-10 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: mainColor }} />
                                     <div>
                                         <div className="font-bold text-sm capitalize text-gray-900">{name}</div>
                                         <div className="text-xs text-gray-500">{desc}</div>
