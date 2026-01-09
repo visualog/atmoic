@@ -40,7 +40,7 @@ export default function ScaleVisualizer({ scale, colorName }: ScaleVisualizerPro
                 </div>
 
                 {/* Color Blocks */}
-                <div className="flex h-16 rounded-xl overflow-hidden ring-1 ring-gray-200 shadow-sm">
+                <div className="flex h-16 rounded-xl overflow-hidden">
                     {steps.map((value, i) => (
                         <div
                             key={i}
