@@ -127,9 +127,8 @@ export default function BuilderPage() {
 
                 {/* 1. Brand Color Selection */}
                 <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs">1</span>
-                        Brand Color (Primary)
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                        Brand
                     </h3>
                     <div className="grid grid-cols-6 sm:grid-cols-11 gap-2">
                         {BRAND_COLORS.map(color => {
@@ -155,16 +154,15 @@ export default function BuilderPage() {
                     </div>
 
                     <div className="mt-6 border-t pt-6">
-                        <h4 className="text-sm font-bold text-gray-900 mb-3">Primary Scale</h4>
+                        <h4 className="text-sm font-bold text-gray-900 mb-3">Scale</h4>
                         <ScaleVisualizer scale={brandScale} colorName="Primary" />
                     </div>
                 </section>
 
                 {/* 2. Neutral Color Selection */}
                 <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs">2</span>
-                        Neutral Color (Text & Surface)
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                        Neutral
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {sortedNeutrals.map(({ name, desc }) => {
@@ -185,6 +183,7 @@ export default function BuilderPage() {
                                                 ? "border-blue-200 bg-blue-50/30 hover:border-blue-300 hover:bg-blue-50"
                                                 : "border-gray-200 hover:border-gray-400 hover:bg-gray-50 opacity-60 hover:opacity-100"
                                     )}
+                                    title={desc}
                                 >
                                     {isRecommended && (
                                         <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 animate-pulse flex items-center gap-1">
@@ -203,7 +202,7 @@ export default function BuilderPage() {
                     </div>
 
                     <div className="mt-6 border-t pt-6">
-                        <h4 className="text-sm font-bold text-gray-900 mb-3">Neutral Scale</h4>
+                        <h4 className="text-sm font-bold text-gray-900 mb-3">Scale</h4>
                         <ScaleVisualizer scale={neutralScale} colorName="Neutral" />
                     </div>
                 </section>
