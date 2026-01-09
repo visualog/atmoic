@@ -3,7 +3,7 @@ import { Bell, Search, Menu, User, Settings, Check } from 'lucide-react';
 
 export default function LivePreview() {
     return (
-        <div className="bg-gray-100 p-8 rounded-2xl border border-gray-200 shadow-inner overflow-hidden relative min-h-[500px]">
+        <div className="bg-gray-100 p-8 rounded-2xl border border-gray-200 overflow-hidden relative min-h-[500px]">
             {/* Simulation of an App Interface */}
             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden max-w-md mx-auto transform transition-all hover:scale-[1.01]">
 
