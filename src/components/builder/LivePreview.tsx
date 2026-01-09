@@ -41,7 +41,7 @@ export default function LivePreview() {
 
                     {/* Hero Card */}
                     <div
-                        className="rounded-xl p-6 shadow-md relative overflow-hidden"
+                        className="rounded-xl p-6 relative overflow-hidden"
                         style={{
                             background: `linear-gradient(135deg, var(--primary-9, #3b82f6), var(--primary-10, #1d4ed8))`,
                             color: 'var(--primary-foreground, #ffffff)'
@@ -51,7 +51,7 @@ export default function LivePreview() {
                             <h3 className="font-bold text-lg mb-1">Welcome back, Designer!</h3>
                             <p style={{ color: 'var(--primary-foreground, #ffffff)', opacity: 0.9 }} className="text-sm mb-4">You have 3 pending tasks today.</p>
                             <button
-                                className="px-4 py-2 text-sm font-semibold rounded-lg shadow-sm transition-colors hover:opacity-90"
+                                className="px-4 py-2 text-sm font-semibold rounded-lg transition-colors hover:opacity-90"
                                 style={{
                                     backgroundColor: 'var(--neutral-1, #ffffff)',
                                     color: 'var(--primary-11, #2563eb)'
@@ -93,7 +93,13 @@ export default function LivePreview() {
                     </div>
 
                     {/* Form Elements */}
-                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                    <div
+                        className="p-4 rounded-xl border space-y-4"
+                        style={{
+                            backgroundColor: 'var(--neutral-1, #ffffff)',
+                            borderColor: 'var(--neutral-6, #e5e7eb)'
+                        }}
+                    >
                         <div>
                             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">
                                 Project Name
