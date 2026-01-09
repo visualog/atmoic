@@ -37,7 +37,7 @@ export default function LivePreview() {
                 </div>
 
                 {/* App Content */}
-                <div className="p-6 space-y-6" style={{ backgroundColor: 'var(--neutral-2, #f9fafb)' }}>
+                <div className="p-6 space-y-6" style={{ backgroundColor: 'var(--neutral-1, #ffffff)' }}>
 
                     {/* Hero Card */}
                     <div
