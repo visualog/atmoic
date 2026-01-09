@@ -9,6 +9,7 @@ import ScaleVisualizer from '@/components/builder/ScaleVisualizer';
 import { Check, RefreshCw, Star } from 'lucide-react';
 import { clsx } from 'clsx';
 import * as RadixColors from '@radix-ui/colors';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Helper to generate a random ID
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -55,10 +56,10 @@ export default function BuilderPage() {
     // Derived state: Get recommended neutrals for current brand
     const recommendedNeutrals = RECOMMENDATIONS[selectedBrand] || ['gray'];
 
-    // Automatically select the best match neutral when brand changes (Optional UX, maybe too aggressive? Let's sticky to suggestion badges for now)
-    // useEffect(() => {
-    //   if (recommendedNeutrals.length > 0) setSelectedNeutral(recommendedNeutrals[0]);
-    // }, [selectedBrand]);
+    // Automatically select the best match neutral when brand changes
+    useEffect(() => {
+        if (recommendedNeutrals.length > 0) setSelectedNeutral(recommendedNeutrals[0]);
+    }, [selectedBrand, recommendedNeutrals]);
 
     // Sort neutrals: Recommended first, then others
     const sortedNeutrals = useMemo(() => {
@@ -98,6 +99,15 @@ export default function BuilderPage() {
             });
         });
 
+        // Contrast Logic for Light Brands
+        const LIGHT_BRANDS = ['amber', 'yellow', 'lime', 'mint', 'sky'];
+        const isLight = LIGHT_BRANDS.includes(selectedBrand);
+        tokens.push({
+            name: 'Primary Foreground',
+            value: isLight ? '#1a1a1a' : '#ffffff', // Using slightly off-black for better aesthetic
+            type: 'color'
+        });
+
         return tokens;
     }, [brandScale, neutralScale]);
 
@@ -126,7 +136,7 @@ export default function BuilderPage() {
                 </div>
 
                 {/* 1. Brand Color Selection */}
-                <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col gap-10">
+                <section className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
                     <h3 className="text-lg font-bold text-gray-900">
                         Brand
                     </h3>
@@ -137,20 +147,42 @@ export default function BuilderPage() {
                             const isSelected = selectedBrand === color;
 
                             return (
-                                <button
+                                <motion.button
                                     key={color}
                                     onClick={() => setSelectedBrand(color)}
-                                    className={clsx(
-                                        "w-full aspect-square transition-all duration-300 relative group",
-                                        isSelected
-                                            ? "rounded-2xl scale-110 shadow-sm"
-                                            : "rounded-full hover:scale-110"
-                                    )}
+                                    // Remove Tailwind transition/rounded classes to let Motion handle it
+                                    className="w-full aspect-square relative group border-transparent"
+                                    initial={false}
+                                    animate={{
+                                        borderRadius: isSelected ? "16px" : "9999px",
+                                        scale: isSelected ? 1.1 : 1
+                                    }}
+                                    whileHover={{ scale: 1.1 }}
+                                    transition={{
+                                        // Material Design 3 Emphasized easing
+                                        duration: 0.8,
+                                        ease: [0.2, 0.0, 0.0, 1.0]
+                                    }}
                                     style={{ backgroundColor: mainColor }}
                                     title={color}
                                 >
-                                    {isSelected && <Check className="w-4 h-4 text-white absolute inset-0 m-auto drop-shadow-md" />}
-                                </button>
+                                    <AnimatePresence>
+                                        {isSelected && (
+                                            <motion.span
+                                                className="absolute inset-0 flex items-center justify-center"
+                                                initial={{ opacity: 0, scale: 0.5 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.5 }}
+                                                transition={{
+                                                    duration: 0.8,
+                                                    ease: [0.2, 0.0, 0.0, 1.0]
+                                                }}
+                                            >
+                                                <Check className="w-4 h-4 text-white" />
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.button>
                             );
                         })}
                     </div>
@@ -159,11 +191,11 @@ export default function BuilderPage() {
                 </section>
 
                 {/* 2. Neutral Color Selection */}
-                <section className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col gap-10">
+                <section className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
                     <h3 className="text-lg font-bold text-gray-900">
                         Neutral
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-6 sm:grid-cols-11 gap-2">
                         {sortedNeutrals.map(({ name, desc }) => {
                             const scale = (RadixColors as any)[name];
                             const mainColor = Object.values(scale)[8] as string; // Step 9
@@ -171,31 +203,50 @@ export default function BuilderPage() {
                             const isRecommended = recommendedNeutrals.includes(name);
 
                             return (
-                                <button
+                                <motion.button
                                     key={name}
                                     onClick={() => setSelectedNeutral(name)}
-                                    className={clsx(
-                                        "relative flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
-                                        isSelected
-                                            ? "border-gray-900 bg-gray-50 ring-1 ring-gray-900"
-                                            : isRecommended
-                                                ? "border-blue-200 bg-blue-50/30 hover:border-blue-300 hover:bg-blue-50"
-                                                : "border-gray-200 hover:border-gray-400 hover:bg-gray-50 opacity-60 hover:opacity-100"
-                                    )}
-                                    title={desc}
+                                    className="w-full aspect-square relative group border-transparent"
+                                    initial={false}
+                                    animate={{
+                                        borderRadius: isSelected ? "16px" : "9999px",
+                                        scale: isSelected ? 1.1 : 1
+                                    }}
+                                    whileHover={{ scale: 1.1 }}
+                                    transition={{
+                                        duration: 0.8,
+                                        ease: [0.2, 0.0, 0.0, 1.0]
+                                    }}
+                                    style={{ backgroundColor: mainColor }}
+                                    title={`${name}: ${desc}`}
                                 >
-                                    {isRecommended && (
-                                        <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 animate-pulse flex items-center gap-1">
-                                            <Star className="w-2.5 h-2.5 fill-current" />
-                                            BEST
-                                        </span>
+                                    <AnimatePresence>
+                                        {isSelected && (
+                                            <motion.span
+                                                className="absolute inset-0 flex items-center justify-center"
+                                                initial={{ opacity: 0, scale: 0.5 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.5 }}
+                                                transition={{
+                                                    duration: 0.8,
+                                                    ease: [0.2, 0.0, 0.0, 1.0]
+                                                }}
+                                            >
+                                                <Check className="w-4 h-4 text-white" />
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+
+                                    {isRecommended && !isSelected && (
+                                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10" />
                                     )}
-                                    <div className="w-10 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: mainColor }} />
-                                    <div>
-                                        <div className="font-bold text-sm capitalize text-gray-900">{name}</div>
-                                        <div className="text-xs text-gray-500">{desc}</div>
-                                    </div>
-                                </button>
+                                    {isRecommended && isSelected && (
+                                        <motion.span
+                                            className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10"
+                                            layout
+                                        />
+                                    )}
+                                </motion.button>
                             );
                         })}
                     </div>
@@ -212,7 +263,7 @@ export default function BuilderPage() {
                         </p>
                         <button
                             onClick={handleApplyTheme}
-                            className="px-6 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-black transition-colors shadow-lg flex items-center"
+                            className="px-6 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-black transition-colors flex items-center"
                         >
                             <RefreshCw className="w-5 h-5 mr-2" />
                             Apply Theme to System
@@ -227,11 +278,8 @@ export default function BuilderPage() {
                 <div className="sticky top-8 space-y-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide">
-                            Live Theme Preview
+                            Live
                         </h3>
-                        <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full font-medium">
-                            Real-time
-                        </span>
                     </div>
 
                     <ThemeInjector customTokens={previewTokens}>
@@ -248,3 +296,4 @@ export default function BuilderPage() {
         </div>
     );
 }
+
