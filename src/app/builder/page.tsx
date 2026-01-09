@@ -64,10 +64,19 @@ export default function BuilderPage() {
     // Sort neutrals: Recommended first, then others
     const sortedNeutrals = useMemo(() => {
         return [...NEUTRAL_COLORS].sort((a, b) => {
-            const aIsRec = recommendedNeutrals.includes(a.name);
-            const bIsRec = recommendedNeutrals.includes(b.name);
-            if (aIsRec && !bIsRec) return -1;
-            if (!aIsRec && bIsRec) return 1;
+            const indexA = recommendedNeutrals.indexOf(a.name);
+            const indexB = recommendedNeutrals.indexOf(b.name);
+
+            // Both are recommended: Sort by priority (index in recommendations)
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+
+            // Only A is recommended: A comes first
+            if (indexA !== -1) return -1;
+
+            // Only B is recommended: B comes first
+            if (indexB !== -1) return 1;
+
+            // Neither recommended: Maintain original order
             return 0;
         });
     }, [selectedBrand, recommendedNeutrals]);
@@ -111,197 +120,182 @@ export default function BuilderPage() {
         return tokens;
     }, [brandScale, neutralScale]);
 
-    // Helper to apply to store
-    const handleApplyTheme = () => {
-        // 1. Clear existing color tokens
-        const existingIds = getTokensByType('color').map(t => t.id);
-        existingIds.forEach(id => removeToken(id));
+    // Auto-save: Automatically apply theme to system when tokens change
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            // 1. Clear existing color tokens
+            const existingIds = getTokensByType('color').map(t => t.id);
+            existingIds.forEach(id => removeToken(id));
 
-        // 2. Add All Preview Tokens
-        previewTokens.forEach(t => {
-            addToken({ ...t, id: generateId() });
-        });
-    };
+            // 2. Add All Preview Tokens
+            previewTokens.forEach(t => {
+                addToken({ ...t, id: generateId() });
+            });
+        }, 500); // 500ms debounce
+
+        return () => clearTimeout(timer);
+    }, [previewTokens, getTokensByType, removeToken, addToken]);
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-20">
-
-            {/* LEFT COLUMN: Configuration */}
-            <div className="lg:col-span-7 space-y-10">
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-900">시스템 컬러 설계</h2>
-                    <p className="text-gray-500 mt-1">
-                        Radix UI 시스템을 기반으로 완벽한 조화를 이루는 컬러 팔레트를 선택하세요.
-                    </p>
-                </div>
-
-                {/* 1. Brand Color Selection */}
-                <section className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
-                    <h3 className="text-lg font-bold text-gray-900">
-                        Brand
-                    </h3>
-                    <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
-                        {BRAND_COLORS.map(color => {
-                            const scale = (RadixColors as any)[color];
-                            const mainColor = Object.values(scale)[8] as string; // Step 9
-                            const isSelected = selectedBrand === color;
-
-                            return (
-                                <div key={color} className="flex flex-col items-center gap-1.5">
-                                    <motion.button
-                                        onClick={() => setSelectedBrand(color)}
-                                        // Remove Tailwind transition/rounded classes to let Motion handle it
-                                        className="w-full aspect-square relative group border-transparent"
-                                        initial={false}
-                                        animate={{
-                                            borderRadius: isSelected ? "16px" : "9999px",
-                                            scale: isSelected ? 1.1 : 1
-                                        }}
-                                        whileHover={{ scale: 1.1 }}
-                                        transition={{
-                                            // Material Design 3 Emphasized easing
-                                            duration: 0.8,
-                                            ease: [0.2, 0.0, 0.0, 1.0]
-                                        }}
-                                        style={{ backgroundColor: mainColor }}
-                                        title={color}
-                                    >
-                                        <AnimatePresence>
-                                            {isSelected && (
-                                                <motion.span
-                                                    className="absolute inset-0 flex items-center justify-center"
-                                                    initial={{ opacity: 0, scale: 0.5 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    exit={{ opacity: 0, scale: 0.5 }}
-                                                    transition={{
-                                                        duration: 0.8,
-                                                        ease: [0.2, 0.0, 0.0, 1.0]
-                                                    }}
-                                                >
-                                                    <Check className="w-4 h-4 text-white" />
-                                                </motion.span>
-                                            )}
-                                        </AnimatePresence>
-                                    </motion.button>
-                                    <span className={`text-xs font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
-                                        {color}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <ScaleVisualizer scale={brandScale} colorName="Primary" />
-                </section>
-
-                {/* 2. Neutral Color Selection */}
-                <section className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
-                    <h3 className="text-lg font-bold text-gray-900">
-                        Neutral
-                    </h3>
-                    <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
-                        {sortedNeutrals.map(({ name, desc }) => {
-                            const scale = (RadixColors as any)[name];
-                            const mainColor = Object.values(scale)[8] as string; // Step 9
-                            const isSelected = selectedNeutral === name;
-                            const isRecommended = recommendedNeutrals.includes(name);
-
-                            return (
-                                <div key={name} className="flex flex-col items-center gap-1.5">
-                                    <motion.button
-                                        onClick={() => setSelectedNeutral(name)}
-                                        className="w-full aspect-square relative group border-transparent"
-                                        initial={false}
-                                        animate={{
-                                            borderRadius: isSelected ? "16px" : "9999px",
-                                            scale: isSelected ? 1.1 : 1
-                                        }}
-                                        whileHover={{ scale: 1.1 }}
-                                        transition={{
-                                            duration: 0.8,
-                                            ease: [0.2, 0.0, 0.0, 1.0]
-                                        }}
-                                        style={{ backgroundColor: mainColor }}
-                                        title={`${name}: ${desc}`}
-                                    >
-                                        <AnimatePresence>
-                                            {isSelected && (
-                                                <motion.span
-                                                    className="absolute inset-0 flex items-center justify-center"
-                                                    initial={{ opacity: 0, scale: 0.5 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    exit={{ opacity: 0, scale: 0.5 }}
-                                                    transition={{
-                                                        duration: 0.8,
-                                                        ease: [0.2, 0.0, 0.0, 1.0]
-                                                    }}
-                                                >
-                                                    <Check className="w-4 h-4 text-white" />
-                                                </motion.span>
-                                            )}
-                                        </AnimatePresence>
-
-                                        {isRecommended && !isSelected && (
-                                            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10" />
-                                        )}
-                                        {isRecommended && isSelected && (
-                                            <motion.span
-                                                className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10"
-                                                layout
-                                            />
-                                        )}
-                                    </motion.button>
-                                    <span className={`text-[10px] font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
-                                        {name}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <ScaleVisualizer scale={neutralScale} colorName="Neutral" />
-                </section>
-
-                {/* 3. Action */}
-                <div className="flex justify-end p-4 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                    <div className="flex items-center gap-4">
-                        <p className="text-sm text-gray-500 text-right">
-                            선택한 테마를 시스템에 적용합니다.<br />
-                            기존의 사용자 정의 토큰은 재설정됩니다.
-                        </p>
-                        <button
-                            onClick={handleApplyTheme}
-                            className="px-6 py-3 bg-gray-900 text-white font-bold rounded-lg hover:bg-black transition-colors flex items-center"
-                        >
-                            <RefreshCw className="w-5 h-5 mr-2" />
-                            Apply Theme to System
-                        </button>
-                    </div>
-                </div>
-
+        <div className="pb-20">
+            {/* Page Header */}
+            <div className="mb-10">
+                <h2 className="text-2xl font-bold text-gray-900">시스템 컬러 설계</h2>
+                <p className="text-gray-500 mt-1">
+                    Radix UI 시스템을 기반으로 완벽한 조화를 이루는 컬러 팔레트를 선택하세요.
+                </p>
             </div>
 
-            {/* RIGHT COLUMN: Live Preview */}
-            <div className="lg:col-span-5">
-                <div className="sticky top-8 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                            Live
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                {/* LEFT COLUMN: Configuration */}
+                <div className="lg:col-span-7 space-y-10">
+
+                    {/* 1. Brand Color Selection */}
+                    <section className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
+                        <h3 className="text-lg font-bold text-gray-900">
+                            Brand
                         </h3>
-                    </div>
+                        <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
+                            {BRAND_COLORS.map(color => {
+                                const scale = (RadixColors as any)[color];
+                                const mainColor = Object.values(scale)[8] as string; // Step 9
+                                const isSelected = selectedBrand === color;
 
-                    <ThemeInjector customTokens={previewTokens}>
-                        <LivePreview />
-                    </ThemeInjector>
+                                return (
+                                    <div key={color} className="flex flex-col items-center gap-1.5">
+                                        <motion.button
+                                            onClick={() => setSelectedBrand(color)}
+                                            // Remove Tailwind transition/rounded classes to let Motion handle it
+                                            className="w-full aspect-square relative group border-transparent"
+                                            initial={false}
+                                            animate={{
+                                                borderRadius: isSelected ? "16px" : "9999px",
+                                                scale: isSelected ? 1.1 : 1
+                                            }}
+                                            whileHover={{ scale: 1.1 }}
+                                            transition={{
+                                                // Material Design 3 Emphasized easing
+                                                duration: 0.8,
+                                                ease: [0.2, 0.0, 0.0, 1.0]
+                                            }}
+                                            style={{ backgroundColor: mainColor }}
+                                            title={color}
+                                        >
+                                            <AnimatePresence>
+                                                {isSelected && (
+                                                    <motion.span
+                                                        className="absolute inset-0 flex items-center justify-center"
+                                                        initial={{ opacity: 0, scale: 0.5 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        exit={{ opacity: 0, scale: 0.5 }}
+                                                        transition={{
+                                                            duration: 0.8,
+                                                            ease: [0.2, 0.0, 0.0, 1.0]
+                                                        }}
+                                                    >
+                                                        <Check className="w-4 h-4 text-white" />
+                                                    </motion.span>
+                                                )}
+                                            </AnimatePresence>
+                                        </motion.button>
+                                        <span className={`text-xs font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                            {color}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
 
-                    <div className="text-xs text-green-600 px-2 bg-green-50 p-2 rounded border border-green-100 flex items-center gap-2">
-                        <Check className="w-3 h-3" />
-                        선택하신 색상이 프리뷰에 즉시 반영됩니다.
+                        <ScaleVisualizer scale={brandScale} colorName="Primary" />
+                    </section>
+
+                    {/* 2. Neutral Color Selection */}
+                    <section className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
+                        <h3 className="text-lg font-bold text-gray-900">
+                            Neutral
+                        </h3>
+                        <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
+                            {sortedNeutrals.map(({ name, desc }) => {
+                                const scale = (RadixColors as any)[name];
+                                const mainColor = Object.values(scale)[8] as string; // Step 9
+                                const isSelected = selectedNeutral === name;
+                                const isRecommended = recommendedNeutrals.includes(name);
+
+                                return (
+                                    <div key={name} className="flex flex-col items-center gap-1.5">
+                                        <motion.button
+                                            onClick={() => setSelectedNeutral(name)}
+                                            className="w-full aspect-square relative group border-transparent"
+                                            initial={false}
+                                            animate={{
+                                                borderRadius: isSelected ? "16px" : "9999px",
+                                                scale: isSelected ? 1.1 : 1
+                                            }}
+                                            whileHover={{ scale: 1.1 }}
+                                            transition={{
+                                                duration: 0.8,
+                                                ease: [0.2, 0.0, 0.0, 1.0]
+                                            }}
+                                            style={{ backgroundColor: mainColor }}
+                                            title={`${name}: ${desc}`}
+                                        >
+                                            <AnimatePresence>
+                                                {isSelected && (
+                                                    <motion.span
+                                                        className="absolute inset-0 flex items-center justify-center"
+                                                        initial={{ opacity: 0, scale: 0.5 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        exit={{ opacity: 0, scale: 0.5 }}
+                                                        transition={{
+                                                            duration: 0.8,
+                                                            ease: [0.2, 0.0, 0.0, 1.0]
+                                                        }}
+                                                    >
+                                                        <Check className="w-4 h-4 text-white" />
+                                                    </motion.span>
+                                                )}
+                                            </AnimatePresence>
+
+                                            {isRecommended && !isSelected && (
+                                                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10" />
+                                            )}
+                                            {isRecommended && isSelected && (
+                                                <motion.span
+                                                    className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10"
+                                                    layout
+                                                />
+                                            )}
+                                        </motion.button>
+                                        <span className={`text-[10px] font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                            {name}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <ScaleVisualizer scale={neutralScale} colorName="Neutral" />
+                    </section>
+
+                    {/* Auto-save enabled implicitly */}
+                </div>
+
+                {/* RIGHT COLUMN: Live Preview */}
+                <div className="lg:col-span-5">
+                    <div className="sticky top-8 space-y-4">
+                        <ThemeInjector customTokens={previewTokens}>
+                            <LivePreview />
+                        </ThemeInjector>
+
+                        <div className="text-xs text-green-600 px-2 bg-green-50 p-2 rounded border border-green-100 flex items-center gap-2">
+                            <Check className="w-3 h-3" />
+                            선택하신 색상이 프리뷰에 즉시 반영됩니다.
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     );
 }
