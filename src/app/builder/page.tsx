@@ -45,9 +45,23 @@ export default function BuilderPage() {
     const { tokens, addToken, getTokensByType, removeToken } = useTokenStore();
     const { selectItem } = useBuilderStore();
 
+    // Semantic Color Options
+    const SEMANTIC_OPTIONS = {
+        success: ['green', 'teal', 'grass', 'mint'],
+        error: ['red', 'tomato', 'ruby', 'crimson'],
+        warning: ['amber', 'yellow', 'orange'],
+        info: ['blue', 'sky', 'cyan', 'indigo']
+    };
+
     // Selection State
     const [selectedBrand, setSelectedBrand] = useState('indigo');
     const [selectedNeutral, setSelectedNeutral] = useState('slate');
+
+    // Semantic State
+    const [selectedSuccess, setSelectedSuccess] = useState('green');
+    const [selectedError, setSelectedError] = useState('red');
+    const [selectedWarning, setSelectedWarning] = useState('amber');
+    const [selectedInfo, setSelectedInfo] = useState('blue');
 
     // Get the actual scale objects from Radix package
     const brandScale = (RadixColors as any)[selectedBrand];
@@ -95,12 +109,12 @@ export default function BuilderPage() {
             tokens.push({ name: `Neutral ${index + 1}`, value, type: 'color' });
         });
 
-        // Semantics (Default)
+        // Semantics (Configurable)
         const semantics = [
-            { name: 'Success', scale: RadixColors.green },
-            { name: 'Error', scale: RadixColors.red },
-            { name: 'Warning', scale: RadixColors.amber },
-            { name: 'Info', scale: RadixColors.blue },
+            { name: 'Success', scale: (RadixColors as any)[selectedSuccess] },
+            { name: 'Error', scale: (RadixColors as any)[selectedError] },
+            { name: 'Warning', scale: (RadixColors as any)[selectedWarning] },
+            { name: 'Info', scale: (RadixColors as any)[selectedInfo] },
         ];
         semantics.forEach(sem => {
             Object.values(sem.scale).forEach((val: any, idx) => {
@@ -118,7 +132,7 @@ export default function BuilderPage() {
         });
 
         return tokens;
-    }, [brandScale, neutralScale]);
+    }, [brandScale, neutralScale, selectedSuccess, selectedError, selectedWarning, selectedInfo]);
 
     // Auto-save: Automatically apply theme to system when tokens change
     useEffect(() => {
@@ -277,6 +291,74 @@ export default function BuilderPage() {
 
                         <ScaleVisualizer scale={neutralScale} colorName="Neutral" />
                     </section>
+
+                    {/* 3. Semantic Color Selections (Separate Sections) */}
+                    {[
+                        { role: 'success', label: 'Success', state: selectedSuccess, setter: setSelectedSuccess, options: SEMANTIC_OPTIONS.success },
+                        { role: 'error', label: 'Error', state: selectedError, setter: setSelectedError, options: SEMANTIC_OPTIONS.error },
+                        { role: 'warning', label: 'Warning', state: selectedWarning, setter: setSelectedWarning, options: SEMANTIC_OPTIONS.warning },
+                        { role: 'info', label: 'Info', state: selectedInfo, setter: setSelectedInfo, options: SEMANTIC_OPTIONS.info },
+                    ].map((group) => {
+                        const currentScale = (RadixColors as any)[group.state];
+
+                        return (
+                            <section key={group.role} className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
+                                <h3 className="text-lg font-bold text-gray-900">
+                                    {group.label}
+                                </h3>
+                                <div className="grid grid-cols-6 sm:grid-cols-11 gap-x-2 gap-y-4">
+                                    {group.options.map(color => {
+                                        const scale = (RadixColors as any)[color];
+                                        const mainColor = Object.values(scale)[8] as string; // Step 9
+                                        const isSelected = group.state === color;
+
+                                        return (
+                                            <div key={color} className="flex flex-col items-center gap-1.5">
+                                                <motion.button
+                                                    onClick={() => group.setter(color)}
+                                                    className="w-full aspect-square relative group border-transparent"
+                                                    initial={false}
+                                                    animate={{
+                                                        scale: isSelected ? 1.1 : 1,
+                                                        borderRadius: isSelected ? "16px" : "9999px"
+                                                    }}
+                                                    whileHover={{ scale: 1.1 }}
+                                                    transition={{
+                                                        duration: 0.8,
+                                                        ease: [0.2, 0.0, 0.0, 1.0]
+                                                    }}
+                                                    style={{ backgroundColor: mainColor }}
+                                                    title={color}
+                                                >
+                                                    <AnimatePresence>
+                                                        {isSelected && (
+                                                            <motion.span
+                                                                className="absolute inset-0 flex items-center justify-center"
+                                                                initial={{ opacity: 0, scale: 0.5 }}
+                                                                animate={{ opacity: 1, scale: 1 }}
+                                                                exit={{ opacity: 0, scale: 0.5 }}
+                                                                transition={{
+                                                                    duration: 0.8,
+                                                                    ease: [0.2, 0.0, 0.0, 1.0]
+                                                                }}
+                                                            >
+                                                                <Check className="w-4 h-4 text-white" />
+                                                            </motion.span>
+                                                        )}
+                                                    </AnimatePresence>
+                                                </motion.button>
+                                                <span className={`text-xs font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                                    {color}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <ScaleVisualizer scale={currentScale} colorName={group.label} />
+                            </section>
+                        );
+                    })}
 
                     {/* Auto-save enabled implicitly */}
                 </div>
