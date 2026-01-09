@@ -3,7 +3,7 @@ import { Bell, Search, Menu, User, Settings, Check } from 'lucide-react';
 
 export default function LivePreview() {
     return (
-        <div className="bg-gray-100 p-8 rounded-2xl border border-gray-200 overflow-hidden relative min-h-[500px]">
+        <div className="p-8 rounded-2xl border border-gray-200 overflow-hidden relative min-h-[500px]" style={{ backgroundColor: 'var(--neutral-2, #f3f4f6)' }}>
             {/* Simulation of an App Interface */}
             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden max-w-md mx-auto transform transition-all hover:scale-[1.01]">
 
@@ -129,8 +129,8 @@ export default function LivePreview() {
                                 </div>
                                 Notifications
                             </label>
-                            <div className="w-10 h-6 bg-gray-200 rounded-full relative cursor-pointer">
-                                <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+                            <div className="w-10 h-6 rounded-full relative cursor-pointer" style={{ backgroundColor: 'var(--neutral-3, #e5e7eb)' }}>
+                                <div className="absolute left-1 top-1 w-4 h-4 rounded-full shadow-sm" style={{ backgroundColor: 'var(--neutral-1, #ffffff)' }}></div>
                             </div>
                         </div>
                     </div>
