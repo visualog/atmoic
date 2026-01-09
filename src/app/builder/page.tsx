@@ -140,49 +140,53 @@ export default function BuilderPage() {
                     <h3 className="text-lg font-bold text-gray-900">
                         Brand
                     </h3>
-                    <div className="grid grid-cols-6 sm:grid-cols-11 gap-2">
+                    <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
                         {BRAND_COLORS.map(color => {
                             const scale = (RadixColors as any)[color];
                             const mainColor = Object.values(scale)[8] as string; // Step 9
                             const isSelected = selectedBrand === color;
 
                             return (
-                                <motion.button
-                                    key={color}
-                                    onClick={() => setSelectedBrand(color)}
-                                    // Remove Tailwind transition/rounded classes to let Motion handle it
-                                    className="w-full aspect-square relative group border-transparent"
-                                    initial={false}
-                                    animate={{
-                                        borderRadius: isSelected ? "16px" : "9999px",
-                                        scale: isSelected ? 1.1 : 1
-                                    }}
-                                    whileHover={{ scale: 1.1 }}
-                                    transition={{
-                                        // Material Design 3 Emphasized easing
-                                        duration: 0.8,
-                                        ease: [0.2, 0.0, 0.0, 1.0]
-                                    }}
-                                    style={{ backgroundColor: mainColor }}
-                                    title={color}
-                                >
-                                    <AnimatePresence>
-                                        {isSelected && (
-                                            <motion.span
-                                                className="absolute inset-0 flex items-center justify-center"
-                                                initial={{ opacity: 0, scale: 0.5 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.5 }}
-                                                transition={{
-                                                    duration: 0.8,
-                                                    ease: [0.2, 0.0, 0.0, 1.0]
-                                                }}
-                                            >
-                                                <Check className="w-4 h-4 text-white" />
-                                            </motion.span>
-                                        )}
-                                    </AnimatePresence>
-                                </motion.button>
+                                <div key={color} className="flex flex-col items-center gap-1.5">
+                                    <motion.button
+                                        onClick={() => setSelectedBrand(color)}
+                                        // Remove Tailwind transition/rounded classes to let Motion handle it
+                                        className="w-full aspect-square relative group border-transparent"
+                                        initial={false}
+                                        animate={{
+                                            borderRadius: isSelected ? "16px" : "9999px",
+                                            scale: isSelected ? 1.1 : 1
+                                        }}
+                                        whileHover={{ scale: 1.1 }}
+                                        transition={{
+                                            // Material Design 3 Emphasized easing
+                                            duration: 0.8,
+                                            ease: [0.2, 0.0, 0.0, 1.0]
+                                        }}
+                                        style={{ backgroundColor: mainColor }}
+                                        title={color}
+                                    >
+                                        <AnimatePresence>
+                                            {isSelected && (
+                                                <motion.span
+                                                    className="absolute inset-0 flex items-center justify-center"
+                                                    initial={{ opacity: 0, scale: 0.5 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.5 }}
+                                                    transition={{
+                                                        duration: 0.8,
+                                                        ease: [0.2, 0.0, 0.0, 1.0]
+                                                    }}
+                                                >
+                                                    <Check className="w-4 h-4 text-white" />
+                                                </motion.span>
+                                            )}
+                                        </AnimatePresence>
+                                    </motion.button>
+                                    <span className={`text-xs font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                        {color}
+                                    </span>
+                                </div>
                             );
                         })}
                     </div>
@@ -195,7 +199,7 @@ export default function BuilderPage() {
                     <h3 className="text-lg font-bold text-gray-900">
                         Neutral
                     </h3>
-                    <div className="grid grid-cols-6 sm:grid-cols-11 gap-2">
+                    <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
                         {sortedNeutrals.map(({ name, desc }) => {
                             const scale = (RadixColors as any)[name];
                             const mainColor = Object.values(scale)[8] as string; // Step 9
@@ -203,50 +207,54 @@ export default function BuilderPage() {
                             const isRecommended = recommendedNeutrals.includes(name);
 
                             return (
-                                <motion.button
-                                    key={name}
-                                    onClick={() => setSelectedNeutral(name)}
-                                    className="w-full aspect-square relative group border-transparent"
-                                    initial={false}
-                                    animate={{
-                                        borderRadius: isSelected ? "16px" : "9999px",
-                                        scale: isSelected ? 1.1 : 1
-                                    }}
-                                    whileHover={{ scale: 1.1 }}
-                                    transition={{
-                                        duration: 0.8,
-                                        ease: [0.2, 0.0, 0.0, 1.0]
-                                    }}
-                                    style={{ backgroundColor: mainColor }}
-                                    title={`${name}: ${desc}`}
-                                >
-                                    <AnimatePresence>
-                                        {isSelected && (
-                                            <motion.span
-                                                className="absolute inset-0 flex items-center justify-center"
-                                                initial={{ opacity: 0, scale: 0.5 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.5 }}
-                                                transition={{
-                                                    duration: 0.8,
-                                                    ease: [0.2, 0.0, 0.0, 1.0]
-                                                }}
-                                            >
-                                                <Check className="w-4 h-4 text-white" />
-                                            </motion.span>
-                                        )}
-                                    </AnimatePresence>
+                                <div key={name} className="flex flex-col items-center gap-1.5">
+                                    <motion.button
+                                        onClick={() => setSelectedNeutral(name)}
+                                        className="w-full aspect-square relative group border-transparent"
+                                        initial={false}
+                                        animate={{
+                                            borderRadius: isSelected ? "16px" : "9999px",
+                                            scale: isSelected ? 1.1 : 1
+                                        }}
+                                        whileHover={{ scale: 1.1 }}
+                                        transition={{
+                                            duration: 0.8,
+                                            ease: [0.2, 0.0, 0.0, 1.0]
+                                        }}
+                                        style={{ backgroundColor: mainColor }}
+                                        title={`${name}: ${desc}`}
+                                    >
+                                        <AnimatePresence>
+                                            {isSelected && (
+                                                <motion.span
+                                                    className="absolute inset-0 flex items-center justify-center"
+                                                    initial={{ opacity: 0, scale: 0.5 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.5 }}
+                                                    transition={{
+                                                        duration: 0.8,
+                                                        ease: [0.2, 0.0, 0.0, 1.0]
+                                                    }}
+                                                >
+                                                    <Check className="w-4 h-4 text-white" />
+                                                </motion.span>
+                                            )}
+                                        </AnimatePresence>
 
-                                    {isRecommended && !isSelected && (
-                                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10" />
-                                    )}
-                                    {isRecommended && isSelected && (
-                                        <motion.span
-                                            className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10"
-                                            layout
-                                        />
-                                    )}
-                                </motion.button>
+                                        {isRecommended && !isSelected && (
+                                            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10" />
+                                        )}
+                                        {isRecommended && isSelected && (
+                                            <motion.span
+                                                className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10"
+                                                layout
+                                            />
+                                        )}
+                                    </motion.button>
+                                    <span className={`text-[10px] font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                        {name}
+                                    </span>
+                                </div>
                             );
                         })}
                     </div>
