@@ -271,14 +271,10 @@ export default function BuilderPage() {
                                                 )}
                                             </AnimatePresence>
 
-                                            {isRecommended && !isSelected && (
-                                                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10" />
-                                            )}
-                                            {isRecommended && isSelected && (
-                                                <motion.span
-                                                    className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white z-10"
-                                                    layout
-                                                />
+                                            {isRecommended && (
+                                                <span className="absolute -top-2 -right-1 bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm z-10 border border-white">
+                                                    추천
+                                                </span>
                                             )}
                                         </motion.button>
                                         <span className={`text-[10px] font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
