@@ -1,12 +1,16 @@
-import React from 'react';
+import { useState } from 'react';
 import { clsx } from 'clsx';
+import { useBuilderStore } from '@/stores/useBuilderStore';
 
 interface ScaleVisualizerProps {
     scale: Record<string, string>; // e.g. blue: { blue1: '...', blue2: '...' }
     colorName: string; // e.g. "blue"
+    onSelect?: (index: number) => void;
+    selectedIndex?: number | null;
 }
 
-export default function ScaleVisualizer({ scale, colorName }: ScaleVisualizerProps) {
+export default function ScaleVisualizer({ scale, colorName, onSelect, selectedIndex }: ScaleVisualizerProps) {
+    const { isDarkMode } = useBuilderStore();
     // Extract values into an array [step1, step2, ... step12]
     const steps = Object.values(scale);
 
@@ -18,13 +22,13 @@ export default function ScaleVisualizer({ scale, colorName }: ScaleVisualizerPro
         { label: 'Accessible text', range: [10, 11], cols: 2 }, // Steps 11-12
     ];
 
-    const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     return (
         <div className="w-full overflow-x-auto">
             <div className="min-w-[800px] space-y-2">
                 {/* Header Labels */}
-                <div className="flex text-xs font-medium text-center border-b border-gray-100 pb-2">
+                <div className={`flex text-xs font-medium text-center border-b pb-2 ${isDarkMode ? 'border-slate-700' : 'border-gray-100'}`}>
                     {groups.map((group, idx) => {
                         const isGroupHovered = hoveredIndex !== null && hoveredIndex >= group.range[0] && hoveredIndex <= group.range[1];
 
@@ -34,7 +38,9 @@ export default function ScaleVisualizer({ scale, colorName }: ScaleVisualizerPro
                                 className="flex-1 transition-colors duration-200"
                                 style={{
                                     flexGrow: group.cols,
-                                    color: isGroupHovered ? '#374151' : '#9ca3af', // gray-700 : gray-400
+                                    color: isGroupHovered
+                                        ? (isDarkMode ? '#e5e7eb' : '#374151') // gray-200 : gray-700
+                                        : (isDarkMode ? '#6b7280' : '#9ca3af'), // gray-500 : gray-400
                                     fontWeight: isGroupHovered ? 700 : 500
                                 }}
                             >
@@ -48,15 +54,20 @@ export default function ScaleVisualizer({ scale, colorName }: ScaleVisualizerPro
                 <div className="flex text-[10px] font-mono text-center">
                     {steps.map((_, i) => {
                         const isHovered = i === hoveredIndex;
+                        const isSelected = i === selectedIndex;
 
                         return (
                             <div
                                 key={i}
                                 className="flex-1 transition-all duration-200"
                                 style={{
-                                    color: isHovered ? '#4b5563' : '#d1d5db', // gray-600 : gray-300
-                                    fontWeight: isHovered ? 700 : 400,
-                                    transform: isHovered ? 'scale(1.2)' : 'scale(1)'
+                                    color: isSelected
+                                        ? '#2563eb' // blue-600
+                                        : (isHovered
+                                            ? (isDarkMode ? '#d1d5db' : '#4b5563') // gray-300 : gray-600
+                                            : (isDarkMode ? '#4b5563' : '#d1d5db')), // gray-600 : gray-300
+                                    fontWeight: isHovered || isSelected ? 700 : 400,
+                                    transform: isHovered || isSelected ? 'scale(1.2)' : 'scale(1)'
                                 }}
                             >
                                 {i + 1}
@@ -67,16 +78,24 @@ export default function ScaleVisualizer({ scale, colorName }: ScaleVisualizerPro
 
                 {/* Color Blocks */}
                 <div className="flex h-16 rounded-xl overflow-hidden">
-                    {steps.map((value, i) => (
-                        <div
-                            key={i}
-                            className="flex-1 h-full flex items-end justify-center pb-2 group relative transition-all duration-200"
-                            style={{ backgroundColor: value }}
-                            onMouseEnter={() => setHoveredIndex(i)}
-                            onMouseLeave={() => setHoveredIndex(null)}
-                            title={`${colorName} ${i + 1}: ${value}`}
-                        />
-                    ))}
+                    {steps.map((value, i) => {
+                        const isSelected = i === selectedIndex;
+
+                        return (
+                            <button
+                                key={i}
+                                className={clsx(
+                                    "flex-1 h-full flex items-end justify-center pb-2 group relative transition-all duration-200 focus:outline-none",
+                                    isSelected && "z-10 ring-2 ring-blue-500 ring-offset-2 rounded-sm"
+                                )}
+                                style={{ backgroundColor: value }}
+                                onMouseEnter={() => setHoveredIndex(i)}
+                                onMouseLeave={() => setHoveredIndex(null)}
+                                onClick={() => onSelect?.(i)}
+                                title={`${colorName} ${i + 1}: ${value}`}
+                            />
+                        );
+                    })}
                 </div>
             </div>
         </div>

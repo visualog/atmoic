@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useTokenStore } from '@/stores/useTokenStore';
 import { useBuilderStore } from '@/stores/useBuilderStore';
 import ThemeInjector from '@/components/builder/ThemeInjector';
 import LivePreview from '@/components/builder/LivePreview';
 import ScaleVisualizer from '@/components/builder/ScaleVisualizer';
-import { Check, RefreshCw, Star } from 'lucide-react';
-import { clsx } from 'clsx';
+import { Check } from 'lucide-react';
 import * as RadixColors from '@radix-ui/colors';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -43,7 +42,7 @@ const RECOMMENDATIONS: Record<string, string[]> = {
 
 export default function BuilderPage() {
     const { tokens, addToken, getTokensByType, removeToken } = useTokenStore();
-    const { selectItem } = useBuilderStore();
+    const { selectItem, selectedId, isDarkMode } = useBuilderStore();
 
     // Semantic Color Options
     const SEMANTIC_OPTIONS = {
@@ -52,6 +51,9 @@ export default function BuilderPage() {
         warning: ['amber', 'yellow', 'orange'],
         info: ['blue', 'sky', 'cyan', 'indigo']
     };
+
+    // Type definition for Radix Colors to avoid 'any'
+    const colorScales = RadixColors as unknown as Record<string, Record<string, string>>;
 
     // Selection State
     const [selectedBrand, setSelectedBrand] = useState('indigo');
@@ -63,17 +65,55 @@ export default function BuilderPage() {
     const [selectedWarning, setSelectedWarning] = useState('amber');
     const [selectedInfo, setSelectedInfo] = useState('blue');
 
-    // Get the actual scale objects from Radix package
-    const brandScale = (RadixColors as any)[selectedBrand];
-    const neutralScale = (RadixColors as any)[selectedNeutral];
+    // Handler: When a color chip is clicked in ScaleVisualizer
+    const handleColorSelect = (group: string, index: number) => {
+        const targetName = `${group} ${index + 1}`;
+        const token = tokens.find(t => t.name === targetName);
+
+        if (token) {
+            selectItem(token.id, 'token');
+        } else {
+            console.warn(`Token not found for name: ${targetName}`);
+        }
+    };
+
+    // Helper: Determine which index is selected for a given group
+    const getSelectedIndex = (group: string): number | null => {
+        if (!selectedId) return null;
+
+        const token = tokens.find(t => t.id === selectedId);
+        if (!token) return null;
+
+        if (token.name.startsWith(group + ' ')) {
+            const parts = token.name.split(' ');
+            const number = parseInt(parts[parts.length - 1], 10);
+            return isNaN(number) ? null : number - 1;
+        }
+
+        return null;
+    };
 
     // Derived state: Get recommended neutrals for current brand
-    const recommendedNeutrals = RECOMMENDATIONS[selectedBrand] || ['gray'];
+    const recommendedNeutrals = useMemo(() => RECOMMENDATIONS[selectedBrand] || ['gray'], [selectedBrand]);
 
-    // Automatically select the best match neutral when brand changes
-    useEffect(() => {
-        if (recommendedNeutrals.length > 0) setSelectedNeutral(recommendedNeutrals[0]);
-    }, [selectedBrand, recommendedNeutrals]);
+    // Handle Brand Selection and Auto-select Neutral
+    const handleBrandSelect = (color: string) => {
+        setSelectedBrand(color);
+        const recommendations = RECOMMENDATIONS[color] || ['gray'];
+        if (recommendations.length > 0) {
+            setSelectedNeutral(recommendations[0]);
+        }
+    };
+
+    // Helper: Get scale by name, respecting Dark Mode
+    const getScale = useCallback((name: string): Record<string, string> => {
+        const scaleName = isDarkMode ? `${name}Dark` : name;
+        return colorScales[scaleName] || colorScales[name];
+    }, [isDarkMode, colorScales]);
+
+    // Get the actual scale objects
+    const brandScale = getScale(selectedBrand);
+    const neutralScale = getScale(selectedNeutral);
 
     // Sort neutrals: Recommended first, then others
     const sortedNeutrals = useMemo(() => {
@@ -81,71 +121,68 @@ export default function BuilderPage() {
             const indexA = recommendedNeutrals.indexOf(a.name);
             const indexB = recommendedNeutrals.indexOf(b.name);
 
-            // Both are recommended: Sort by priority (index in recommendations)
             if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-
-            // Only A is recommended: A comes first
             if (indexA !== -1) return -1;
-
-            // Only B is recommended: B comes first
             if (indexB !== -1) return 1;
-
-            // Neither recommended: Maintain original order
             return 0;
         });
-    }, [selectedBrand, recommendedNeutrals]);
+    }, [recommendedNeutrals]);
 
-    // Generate preview tokens for LivePreview (Instant feedback)
+    // Generate preview tokens for LivePreview
     const previewTokens = useMemo(() => {
-        const tokens: any[] = [];
+        const tokens: { name: string; value: string; type: 'color' }[] = [];
 
         // Brand
-        Object.values(brandScale).forEach((value: any, index) => {
-            tokens.push({ name: `Primary ${index + 1}`, value, type: 'color' });
-        });
+        if (brandScale) {
+            Object.values(brandScale).forEach((value, index) => {
+                tokens.push({ name: `Primary ${index + 1}`, value, type: 'color' });
+            });
+        }
 
         // Neutral
-        Object.values(neutralScale).forEach((value: any, index) => {
-            tokens.push({ name: `Neutral ${index + 1}`, value, type: 'color' });
-        });
+        if (neutralScale) {
+            Object.values(neutralScale).forEach((value, index) => {
+                tokens.push({ name: `Neutral ${index + 1}`, value, type: 'color' });
+            });
+        }
 
-        // Semantics (Configurable)
+        // Semantics
         const semantics = [
-            { name: 'Success', scale: (RadixColors as any)[selectedSuccess] },
-            { name: 'Error', scale: (RadixColors as any)[selectedError] },
-            { name: 'Warning', scale: (RadixColors as any)[selectedWarning] },
-            { name: 'Info', scale: (RadixColors as any)[selectedInfo] },
+            { name: 'Success', scale: getScale(selectedSuccess) },
+            { name: 'Error', scale: getScale(selectedError) },
+            { name: 'Warning', scale: getScale(selectedWarning) },
+            { name: 'Info', scale: getScale(selectedInfo) },
         ];
         semantics.forEach(sem => {
-            Object.values(sem.scale).forEach((val: any, idx) => {
-                tokens.push({ name: `${sem.name} ${idx + 1}`, value: val, type: 'color' });
-            });
+            if (sem.scale) {
+                Object.values(sem.scale).forEach((val, idx) => {
+                    tokens.push({ name: `${sem.name} ${idx + 1}`, value: val, type: 'color' });
+                });
+            }
         });
 
-        // Contrast Logic for Light Brands
+        // Contrast Logic for Light Brands (In Dark Mode, always white)
         const LIGHT_BRANDS = ['amber', 'yellow', 'lime', 'mint', 'sky'];
         const isLight = LIGHT_BRANDS.includes(selectedBrand);
         tokens.push({
             name: 'Primary Foreground',
-            value: isLight ? '#1a1a1a' : '#ffffff', // Using slightly off-black for better aesthetic
+            value: isDarkMode ? '#ffffff' : (isLight ? '#1a1a1a' : '#ffffff'),
             type: 'color'
         });
 
         return tokens;
-    }, [brandScale, neutralScale, selectedSuccess, selectedError, selectedWarning, selectedInfo]);
+    }, [brandScale, neutralScale, selectedSuccess, selectedError, selectedWarning, selectedInfo, selectedBrand, isDarkMode, getScale]);
 
     // Auto-save: Automatically apply theme to system when tokens change
     useEffect(() => {
         const timer = setTimeout(() => {
-            // 1. Clear existing color tokens
             const existingIds = getTokensByType('color').map(t => t.id);
             existingIds.forEach(id => removeToken(id));
 
-            // 2. Add All Preview Tokens
             previewTokens.forEach(t => {
                 addToken({ ...t, id: generateId() });
             });
-        }, 500); // 500ms debounce
+        }, 500);
 
         return () => clearTimeout(timer);
     }, [previewTokens, getTokensByType, removeToken, addToken]);
@@ -153,11 +190,13 @@ export default function BuilderPage() {
     return (
         <div className="pb-20">
             {/* Page Header */}
-            <div className="mb-10">
-                <h2 className="text-2xl font-bold text-gray-900">시스템 컬러 설계</h2>
-                <p className="text-gray-500 mt-1">
-                    Radix UI 시스템을 기반으로 완벽한 조화를 이루는 컬러 팔레트를 선택하세요.
-                </p>
+            <div className="mb-10 flex items-center justify-between">
+                <div>
+                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>시스템 컬러 설계</h2>
+                    <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        Radix UI 시스템을 기반으로 완벽한 조화를 이루는 컬러 팔레트를 선택하세요.
+                    </p>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -166,20 +205,21 @@ export default function BuilderPage() {
                 <div className="lg:col-span-7 space-y-10">
 
                     {/* 1. Brand Color Selection */}
-                    <section className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
-                        <h3 className="text-lg font-bold text-gray-900">
+                    <section className={`rounded-2xl border p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
+                        }`}>
+                        <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             Brand
                         </h3>
                         <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
                             {BRAND_COLORS.map(color => {
-                                const scale = (RadixColors as any)[color];
+                                const scale = getScale(color);
                                 const mainColor = Object.values(scale)[8] as string; // Step 9
                                 const isSelected = selectedBrand === color;
 
                                 return (
                                     <div key={color} className="flex flex-col items-center gap-1.5">
                                         <motion.button
-                                            onClick={() => setSelectedBrand(color)}
+                                            onClick={() => handleBrandSelect(color)}
                                             // Remove Tailwind transition/rounded classes to let Motion handle it
                                             className="w-full aspect-square relative group border-transparent"
                                             initial={false}
@@ -213,7 +253,10 @@ export default function BuilderPage() {
                                                 )}
                                             </AnimatePresence>
                                         </motion.button>
-                                        <span className={`text-xs font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                        <span className={`text-xs font-medium capitalize transition-colors ${isSelected
+                                            ? (isDarkMode ? 'text-white' : 'text-gray-900')
+                                            : (isDarkMode ? 'text-gray-500' : 'text-gray-400')
+                                            }`}>
                                             {color}
                                         </span>
                                     </div>
@@ -221,17 +264,23 @@ export default function BuilderPage() {
                             })}
                         </div>
 
-                        <ScaleVisualizer scale={brandScale} colorName="Primary" />
+                        <ScaleVisualizer
+                            scale={brandScale}
+                            colorName="Primary"
+                            onSelect={(i) => handleColorSelect('Primary', i)}
+                            selectedIndex={getSelectedIndex('Primary')}
+                        />
                     </section>
 
                     {/* 2. Neutral Color Selection */}
-                    <section className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
-                        <h3 className="text-lg font-bold text-gray-900">
+                    <section className={`rounded-2xl border p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
+                        }`}>
+                        <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             Neutral
                         </h3>
                         <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
                             {sortedNeutrals.map(({ name, desc }) => {
-                                const scale = (RadixColors as any)[name];
+                                const scale = getScale(name);
                                 const mainColor = Object.values(scale)[8] as string; // Step 9
                                 const isSelected = selectedNeutral === name;
                                 const isRecommended = recommendedNeutrals.includes(name);
@@ -272,12 +321,16 @@ export default function BuilderPage() {
                                             </AnimatePresence>
 
                                             {isRecommended && (
-                                                <span className="absolute -top-2 -right-1 bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm z-10 border border-white">
+                                                <span className={`absolute -top-2 -right-1 bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm z-10 border ${isDarkMode ? 'border-[#191919]' : 'border-white'
+                                                    }`}>
                                                     추천
                                                 </span>
                                             )}
                                         </motion.button>
-                                        <span className={`text-[10px] font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                        <span className={`text-[10px] font-medium capitalize transition-colors ${isSelected
+                                            ? (isDarkMode ? 'text-white' : 'text-gray-900')
+                                            : (isDarkMode ? 'text-gray-500' : 'text-gray-400')
+                                            }`}>
                                             {name}
                                         </span>
                                     </div>
@@ -285,7 +338,12 @@ export default function BuilderPage() {
                             })}
                         </div>
 
-                        <ScaleVisualizer scale={neutralScale} colorName="Neutral" />
+                        <ScaleVisualizer
+                            scale={neutralScale}
+                            colorName="Neutral"
+                            onSelect={(i) => handleColorSelect('Neutral', i)}
+                            selectedIndex={getSelectedIndex('Neutral')}
+                        />
                     </section>
 
                     {/* 3. Semantic Color Selections (Separate Sections) */}
@@ -295,16 +353,17 @@ export default function BuilderPage() {
                         { role: 'warning', label: 'Warning', state: selectedWarning, setter: setSelectedWarning, options: SEMANTIC_OPTIONS.warning },
                         { role: 'info', label: 'Info', state: selectedInfo, setter: setSelectedInfo, options: SEMANTIC_OPTIONS.info },
                     ].map((group) => {
-                        const currentScale = (RadixColors as any)[group.state];
+                        const currentScale = getScale(group.state);
 
                         return (
-                            <section key={group.role} className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-10">
-                                <h3 className="text-lg font-bold text-gray-900">
+                            <section key={group.role} className={`rounded-2xl border p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'
+                                }`}>
+                                <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                     {group.label}
                                 </h3>
                                 <div className="grid grid-cols-6 sm:grid-cols-11 gap-x-2 gap-y-4">
                                     {group.options.map(color => {
-                                        const scale = (RadixColors as any)[color];
+                                        const scale = getScale(color);
                                         const mainColor = Object.values(scale)[8] as string; // Step 9
                                         const isSelected = group.state === color;
 
@@ -343,7 +402,10 @@ export default function BuilderPage() {
                                                         )}
                                                     </AnimatePresence>
                                                 </motion.button>
-                                                <span className={`text-xs font-medium capitalize transition-colors ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                                <span className={`text-xs font-medium capitalize transition-colors ${isSelected
+                                                    ? (isDarkMode ? 'text-white' : 'text-gray-900')
+                                                    : (isDarkMode ? 'text-gray-500' : 'text-gray-400')
+                                                    }`}>
                                                     {color}
                                                 </span>
                                             </div>
@@ -351,7 +413,12 @@ export default function BuilderPage() {
                                     })}
                                 </div>
 
-                                <ScaleVisualizer scale={currentScale} colorName={group.label} />
+                                <ScaleVisualizer
+                                    scale={currentScale}
+                                    colorName={group.label}
+                                    onSelect={(i) => handleColorSelect(group.label, i)}
+                                    selectedIndex={getSelectedIndex(group.label)}
+                                />
                             </section>
                         );
                     })}
@@ -362,11 +429,14 @@ export default function BuilderPage() {
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-5">
                     <div className="sticky top-8 space-y-4">
-                        <ThemeInjector customTokens={previewTokens}>
+                        <ThemeInjector>
                             <LivePreview />
                         </ThemeInjector>
 
-                        <div className="text-xs text-green-600 px-2 bg-green-50 p-2 rounded border border-green-100 flex items-center gap-2">
+                        <div className={`text-xs px-2 p-2 rounded border flex items-center gap-2 transition-colors ${isDarkMode
+                            ? 'bg-[#222222] border-[#2e2e2e] text-green-400'
+                            : 'bg-green-50 border-green-100 text-green-600'
+                            }`}>
                             <Check className="w-3 h-3" />
                             선택하신 색상이 프리뷰에 즉시 반영됩니다.
                         </div>
@@ -377,4 +447,3 @@ export default function BuilderPage() {
         </div>
     );
 }
-
