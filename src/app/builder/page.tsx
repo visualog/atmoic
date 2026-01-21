@@ -6,7 +6,8 @@ import { useBuilderStore } from '@/stores/useBuilderStore';
 import ThemeInjector from '@/components/builder/ThemeInjector';
 import LivePreview from '@/components/builder/LivePreview';
 import ScaleVisualizer from '@/components/builder/ScaleVisualizer';
-import { Check } from 'lucide-react';
+import StatusMessage from '@/components/builder/StatusMessage';
+import { Check, RotateCcw, Layers } from 'lucide-react';
 import * as RadixColors from '@radix-ui/colors';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -192,11 +193,24 @@ export default function BuilderPage() {
             {/* Page Header */}
             <div className="mb-10 flex items-center justify-between">
                 <div>
-                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>시스템 컬러 설계</h2>
+                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>색상</h2>
                     <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         Radix UI 시스템을 기반으로 완벽한 조화를 이루는 컬러 팔레트를 선택하세요.
                     </p>
                 </div>
+                <button
+                    onClick={() => {
+                        const existingIds = getTokensByType('color').map(t => t.id);
+                        existingIds.forEach(id => removeToken(id));
+                    }}
+                    className={`flex items-center px-3 py-1.5 text-sm font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
+                        ? 'bg-[#191919] ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
+                        : 'bg-white ring-gray-300 text-gray-700 hover:bg-gray-50'
+                        }`}
+                >
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    초기화
+                </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -207,7 +221,7 @@ export default function BuilderPage() {
                     {/* 1. Brand Color Selection */}
                     <section className={`rounded-2xl ring-1 ring-inset p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                         }`}>
-                        <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             Brand
                         </h3>
                         <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
@@ -275,7 +289,7 @@ export default function BuilderPage() {
                     {/* 2. Neutral Color Selection */}
                     <section className={`rounded-2xl ring-1 ring-inset p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                         }`}>
-                        <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             Neutral
                         </h3>
                         <div className="grid grid-cols-6 sm:grid-cols-11 gap-y-4 gap-x-2">
@@ -356,9 +370,9 @@ export default function BuilderPage() {
                         const currentScale = getScale(group.state);
 
                         return (
-                            <section key={group.role} className={`rounded-2xl ring-1 ring-inset p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-slate-900 ring-slate-800' : 'bg-white ring-gray-200'
+                            <section key={group.role} className={`rounded-2xl ring-1 ring-inset p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                                 }`}>
-                                <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                     {group.label}
                                 </h3>
                                 <div className="grid grid-cols-6 sm:grid-cols-11 gap-x-2 gap-y-4">
@@ -428,18 +442,20 @@ export default function BuilderPage() {
 
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-5">
-                    <div className="sticky top-8 space-y-4">
-                        <ThemeInjector>
-                            <LivePreview />
-                        </ThemeInjector>
+                    <div className="sticky top-6 space-y-4">
+                        <section className={`rounded-2xl ring-1 ring-inset transition-colors overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
+                            <div className="flex items-center justify-between p-6 pb-0">
+                                <div className="flex items-center gap-2 text-purple-500">
+                                    <Layers className="w-5 h-5" />
+                                    <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>실시간 미리보기</h3>
+                                </div>
+                            </div>
+                            <ThemeInjector>
+                                <LivePreview />
+                            </ThemeInjector>
+                        </section>
 
-                        <div className={`text-xs px-2 p-2 rounded ring-1 ring-inset flex items-center gap-2 transition-colors ${isDarkMode
-                            ? 'bg-[#222222] ring-[#2e2e2e] text-green-400'
-                            : 'bg-green-50 ring-green-100 text-green-600'
-                            }`}>
-                            <Check className="w-3 h-3" />
-                            선택하신 색상이 프리뷰에 즉시 반영됩니다.
-                        </div>
+                        <StatusMessage message="선택하신 색상이 프리뷰에 즉시 반영됩니다." />
                     </div>
                 </div>
 

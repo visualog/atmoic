@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Layers, Box, Component, Palette, Type, Ruler, CheckCircle2 } from 'lucide-react';
+import { Layers, Box, Component, Palette, Type, Ruler, CheckCircle2, Circle, LayoutTemplate, MousePointerClick } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useBuilderStore } from '@/stores/useBuilderStore';
 import { useTokenStore } from '@/stores/useTokenStore';
@@ -8,14 +8,18 @@ import { useTokenStore } from '@/stores/useTokenStore';
 // Navigation items configuration
 const NAV_ITEMS = {
     foundation: [
-        { href: '/builder', icon: Palette, label: '색상 (Colors)', type: 'color' },
+        { href: '/builder', icon: Palette, label: '색상', type: 'color' },
         { href: '/builder/typography', icon: Type, label: '타이포그래피', type: 'typography' },
-        { href: '/builder/spacing', icon: Ruler, label: '간격 (Spacing)', type: 'spacing' },
+        { href: '/builder/spacing', icon: Ruler, label: '간격', type: 'spacing' },
+        { href: '/builder/radius', icon: Circle, label: '곡률', type: 'radius' },
+        { href: '/builder/shadows', icon: Layers, label: '그림자', type: 'shadows' },
+        { href: '/builder/layout', icon: LayoutTemplate, label: '레이아웃', type: 'layout' },
+        { href: '/builder/interaction', icon: MousePointerClick, label: '상호작용', type: 'interaction' },
     ],
     components: [
-        { href: '/builder/atoms', icon: Box, label: '아톰 (Atoms)', type: 'atoms' },
-        { href: '/builder/molecules', icon: Component, label: '몰리큘 (Molecules)', type: 'molecules' },
-        { href: '/builder/organisms', icon: Layers, label: '오가니즘 (Organisms)', type: 'organisms' },
+        { href: '/builder/atoms', icon: Box, label: '아톰', type: 'atoms' },
+        { href: '/builder/molecules', icon: Component, label: '몰리큘', type: 'molecules' },
+        { href: '/builder/organisms', icon: Layers, label: '오가니즘', type: 'organisms' },
     ],
 };
 
@@ -39,11 +43,14 @@ export default function Sidebar() {
     const progressPercent = Math.round((completedSteps / totalSteps) * 100);
 
     return (
-        <div className={`w-64 h-full flex flex-col transition-colors duration-300 ${isDarkMode ? 'bg-[#191919]' : 'bg-white'
-            }`}
-            style={{ boxShadow: isDarkMode ? 'inset -1px 0 0 0 #222222' : 'inset -1px 0 0 0 #e5e7eb' }}>
-            <div className={`h-14 flex items-center px-6 transition-colors duration-300`}
-                style={{ boxShadow: isDarkMode ? 'inset 0 -1px 0 0 #222222' : 'inset 0 -1px 0 0 #e5e7eb' }}>
+        <div
+            className={`w-64 h-full flex flex-col transition-colors duration-300 ${isDarkMode ? 'bg-[#191919]' : 'bg-white'}`}
+            style={{ boxShadow: isDarkMode ? 'inset -1px 0 0 0 #222222' : 'inset -1px 0 0 0 #e5e7eb' }}
+        >
+            <div
+                className={`h-14 flex items-center px-6 transition-colors duration-300`}
+                style={{ boxShadow: isDarkMode ? 'inset 0 -1px 0 0 #222222' : 'inset 0 -1px 0 0 #e5e7eb' }}
+            >
                 <h1 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Atomic</h1>
             </div>
 
@@ -62,8 +69,7 @@ export default function Sidebar() {
             </div>
 
             <div className="flex-1 overflow-y-auto py-4">
-                <div className={`px-4 mb-2 text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-500' : 'text-gray-500'
-                    }`}>
+                <div className={`px-4 mb-2 text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
                     파운데이션
                 </div>
                 <nav className="space-y-1 px-2 mb-6">

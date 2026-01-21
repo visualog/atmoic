@@ -5,7 +5,8 @@ import { useTypographyStore, FONT_FAMILIES } from '@/stores/useTypographyStore';
 import { useBuilderStore } from '@/stores/useBuilderStore';
 import { useTokenStore } from '@/stores/useTokenStore';
 import TypeScaleVisualizer from '@/components/builder/TypeScaleVisualizer';
-import { Check, RotateCcw } from 'lucide-react';
+import StatusMessage from '@/components/builder/StatusMessage';
+import { Check, RotateCcw, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Helper to generate a random ID
@@ -65,7 +66,7 @@ export default function TypographyPage() {
             {/* Page Header */}
             <div className="mb-10 flex items-center justify-between">
                 <div>
-                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>타이포그래피 설계</h2>
+                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>타이포그래피</h2>
                     <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         폰트 패밀리와 타입 스케일을 선택하여 일관된 타이포그래피 시스템을 구축하세요.
                     </p>
@@ -88,9 +89,9 @@ export default function TypographyPage() {
                 <div className="lg:col-span-7 space-y-10">
 
                     {/* 1. Font Family Selection */}
-                    <section className={`rounded-2xl border p-6 transition-colors ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
+                    <section className={`rounded-2xl ring-1 ring-inset p-6 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                         }`}>
-                        <h3 className={`text-lg font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h3 className={`text-base font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             폰트 패밀리
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -143,7 +144,7 @@ export default function TypographyPage() {
 
                     {/* 2. Modular Scale Generator */}
                     <section className={`rounded-2xl ring-1 ring-inset p-6 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'}`}>
-                        <h3 className={`text-lg font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h3 className={`text-base font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             자동 스케일 생성 (Modular Scale)
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-[140px_1fr_auto] gap-4 items-end">
@@ -220,7 +221,7 @@ export default function TypographyPage() {
                     <section className={`rounded-2xl ring-1 ring-inset p-6 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                         }`}>
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                            <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                 타입 스케일
                             </h3>
                             <span className={`text-xs font-medium px-2 py-1 rounded ${isDarkMode ? 'bg-[#222222] text-gray-400' : 'bg-gray-100 text-gray-500'}`}>
@@ -234,15 +235,12 @@ export default function TypographyPage() {
 
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-5">
-                    <div className="sticky top-8 space-y-4">
-                        <div className={`rounded-2xl ring-1 ring-inset p-6 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
-                            }`}>
-                            <div className="flex items-center justify-between mb-6">
-                                <div className="flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-green-400' : 'bg-green-500'}`} />
-                                    <span className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                                        Live Preview
-                                    </span>
+                    <div className="sticky top-6 space-y-4">
+                        <section className={`rounded-2xl ring-1 ring-inset transition-colors overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
+                            <div className="flex items-center justify-between p-6 pb-0">
+                                <div className="flex items-center gap-2 text-purple-500">
+                                    <Layers className="w-5 h-5" />
+                                    <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>실시간 미리보기</h3>
                                 </div>
                                 <div className={`flex items-center p-1 rounded-lg ring-1 ring-inset ${isDarkMode ? 'bg-[#222222] ring-[#2e2e2e]' : 'bg-gray-100 ring-gray-200'}`}>
                                     <button
@@ -272,7 +270,7 @@ export default function TypographyPage() {
                                     maxWidth: viewport === 'mobile' ? '320px' : 'none',
                                     margin: viewport === 'mobile' ? '0 auto' : '0'
                                 }}
-                                className={`space-y-6 transition-all duration-500 ${viewport === 'mobile' ? 'scale-[0.9] sm:scale-100' : ''}`}
+                                className={`space-y-6 transition-all duration-500 p-6 ${viewport === 'mobile' ? 'scale-[0.9] sm:scale-100' : ''}`}
                             >
                                 {/* 1. Card Component Sample */}
                                 <div className={`rounded-xl ring-1 ring-inset p-4 ${isDarkMode ? 'bg-[#222222] ring-[#2e2e2e]' : 'bg-gray-50 ring-gray-200'}`}>
@@ -381,18 +379,11 @@ export default function TypographyPage() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className={`text-xs px-2 p-2 rounded ring-1 ring-inset flex items-center gap-2 transition-colors ${isDarkMode
-                            ? 'bg-[#222222] ring-[#2e2e2e] text-green-400'
-                            : 'bg-green-50 ring-green-100 text-green-600'
-                            }`}>
-                            <Check className="w-3 h-3" />
-                            선택하신 폰트가 프리뷰에 즉시 반영됩니다.
-                        </div>
+                        </section>
                     </div>
-                </div>
 
+                    <StatusMessage message="선택하신 폰트가 프리뷰에 즉시 반영됩니다." />
+                </div>
             </div>
         </div>
     );

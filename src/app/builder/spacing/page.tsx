@@ -5,6 +5,7 @@ import { useSpacingStore } from '@/stores/useSpacingStore';
 import { useBuilderStore } from '@/stores/useBuilderStore';
 import { useTokenStore } from '@/stores/useTokenStore';
 import SpacingVisualizer from '@/components/builder/SpacingVisualizer';
+import StatusMessage from '@/components/builder/StatusMessage';
 import { Ruler, RotateCcw, Grid3X3, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -62,7 +63,7 @@ export default function SpacingPage() {
             {/* Page Header */}
             <div className="mb-10 flex items-center justify-between">
                 <div>
-                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>간격 시스템 (Spacing)</h2>
+                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>간격</h2>
                     <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         그리드 시스템을 기반으로 일관된 여백과 레이아웃 간격을 정의하세요.
                     </p>
@@ -176,12 +177,12 @@ export default function SpacingPage() {
 
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-5">
-                    <div className="sticky top-6 space-y-6">
+                    <div className="sticky top-6 space-y-4">
                         <section className={`rounded-2xl ring-1 ring-inset min-h-[600px] transition-colors relative ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
                             <div className="flex items-center justify-between mb-6 p-6 pb-0">
                                 <div className="flex items-center gap-2 text-purple-500">
                                     <Layers className="w-5 h-5" />
-                                    <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>실시간 미리보기</h3>
+                                    <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>실시간 미리보기</h3>
                                 </div>
                                 <button
                                     onClick={() => setShowGrid(!showGrid)}
@@ -283,6 +284,7 @@ export default function SpacingPage() {
                             </div>
                         </section>
                     </div>
+                    <StatusMessage message="설정하신 간격 시스템이 프리뷰에 즉시 반영됩니다." />
                 </div>
             </div>
         </div>
