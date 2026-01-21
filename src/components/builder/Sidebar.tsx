@@ -135,6 +135,13 @@ export default function Sidebar() {
                     })}
                 </nav>
             </div>
+
+            <div className={`px-6 py-3 border-t ${isDarkMode ? 'border-[#222222]' : 'border-gray-100'}`}>
+                <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-medium ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>Version</span>
+                    <span className={`text-[10px] font-bold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>v0.1.0</span>
+                </div>
+            </div>
         </div>
     );
 }
