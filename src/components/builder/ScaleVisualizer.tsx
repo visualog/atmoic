@@ -28,7 +28,8 @@ export default function ScaleVisualizer({ scale, colorName, onSelect, selectedIn
         <div className="w-full overflow-x-auto">
             <div className="min-w-[800px] space-y-2">
                 {/* Header Labels */}
-                <div className={`flex text-xs font-medium text-center border-b pb-2 ${isDarkMode ? 'border-slate-700' : 'border-gray-100'}`}>
+                <div className={`flex text-xs font-medium text-center pb-2 transition-colors duration-200`}
+                    style={{ boxShadow: isDarkMode ? 'inset 0 -1px 0 0 #334155' : 'inset 0 -1px 0 0 #f3f4f6' }}>
                     {groups.map((group, idx) => {
                         const isGroupHovered = hoveredIndex !== null && hoveredIndex >= group.range[0] && hoveredIndex <= group.range[1];
 

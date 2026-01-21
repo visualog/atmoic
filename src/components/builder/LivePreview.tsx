@@ -7,10 +7,10 @@ export default function LivePreview() {
     const [isApproved, setIsApproved] = useState(false);
 
     return (
-        <div className="p-8 rounded-2xl border overflow-hidden relative min-h-[500px]"
+        <div className="p-8 rounded-2xl ring-1 ring-inset overflow-hidden relative min-h-[500px]"
             style={{
                 backgroundColor: 'var(--neutral-2, #f3f4f6)',
-                borderColor: 'var(--neutral-6, #e5e7eb)'
+                boxShadow: 'inset 0 0 0 1px var(--neutral-6, #e5e7eb)'
             }}>
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-sm font-bold uppercase tracking-wide flex items-center gap-2" style={{ color: 'var(--neutral-11)' }}>
@@ -20,10 +20,10 @@ export default function LivePreview() {
             </div>
 
             {/* Simulation of an App Interface */}
-            <div className="rounded-xl shadow-lg border overflow-hidden max-w-md mx-auto transform transition-all hover:scale-[1.01]"
+            <div className="rounded-xl shadow-lg ring-1 ring-inset overflow-hidden max-w-md mx-auto transform transition-all hover:scale-[1.01]"
                 style={{
                     backgroundColor: 'var(--neutral-1)',
-                    borderColor: 'var(--neutral-6, #e5e7eb)'
+                    boxShadow: 'inset 0 0 0 1px var(--neutral-6, #e5e7eb)'
                 }}>
 
                 {/* App Header */}
@@ -103,7 +103,7 @@ export default function LivePreview() {
                                 } : {
                                     backgroundColor: 'var(--neutral-1, #ffffff)',
                                     color: 'var(--neutral-11, #4b5563)',
-                                    borderColor: 'var(--neutral-6, #e5e7eb)'
+                                    boxShadow: 'inset 0 0 0 1px var(--neutral-6, #e5e7eb)'
                                 }}
                             >
                                 {btn.label}
@@ -116,7 +116,7 @@ export default function LivePreview() {
                         className="p-4 rounded-xl border space-y-4"
                         style={{
                             backgroundColor: 'var(--neutral-1, #ffffff)',
-                            borderColor: 'var(--neutral-6, #e5e7eb)'
+                            boxShadow: 'inset 0 0 0 1px var(--neutral-6, #e5e7eb)'
                         }}
                     >
                         <div>
@@ -129,7 +129,7 @@ export default function LivePreview() {
                                 className="w-full px-3 py-2 border rounded-lg text-sm transition-all outline-none ring-2 ring-transparent focus:ring-opacity-20 placeholder:text-[var(--neutral-9)]"
                                 style={{
                                     backgroundColor: 'var(--neutral-2, #f9fafb)',
-                                    borderColor: 'var(--neutral-6, #e5e7eb)',
+                                    boxShadow: 'inset 0 0 0 1px var(--neutral-6, #e5e7eb)',
                                     color: 'var(--neutral-12, #111827)'
                                 }}
                             />
@@ -140,7 +140,7 @@ export default function LivePreview() {
                                 <div
                                     className="w-5 h-5 rounded border flex items-center justify-center transition-colors"
                                     style={{
-                                        borderColor: 'var(--primary-9, #3b82f6)',
+                                        boxShadow: 'inset 0 0 0 1px var(--primary-9, #3b82f6)',
                                         backgroundColor: 'var(--primary-9, #3b82f6)'
                                     }}
                                 >
@@ -165,7 +165,7 @@ export default function LivePreview() {
                             className="p-3 rounded-lg border flex items-center gap-3"
                             style={{
                                 backgroundColor: 'var(--success-2)',
-                                borderColor: 'var(--success-6)',
+                                boxShadow: 'inset 0 0 0 1px var(--success-6)',
                                 color: 'var(--success-11)'
                             }}
                         >
@@ -201,7 +201,7 @@ export default function LivePreview() {
                             className="p-3 rounded-lg border flex items-center justify-between"
                             style={{
                                 backgroundColor: 'var(--neutral-1, #ffffff)',
-                                borderColor: 'var(--neutral-6, #e5e7eb)'
+                                boxShadow: 'inset 0 0 0 1px var(--neutral-6, #e5e7eb)'
                             }}
                         >
                             <div className="flex items-center gap-3">

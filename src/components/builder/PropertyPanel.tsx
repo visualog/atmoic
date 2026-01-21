@@ -18,7 +18,7 @@ export default function PropertyPanel() {
     }
 
     return (
-        <div className={`w-80 border-l h-full flex flex-col shadow-xl z-20 ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'}`}>
+        <div className={`w-80 ring-1 ring-inset ring-l h-full flex flex-col shadow-xl z-20 ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'}`}>
             {/* Header */}
             <div className={`h-14 border-b flex items-center justify-between px-4 shrink-0 ${isDarkMode ? 'bg-[#161616] border-[#222222]' : 'bg-gray-50 border-gray-200'}`}>
                 <h2 className={`text-sm font-bold uppercase tracking-wide flex items-center ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
@@ -94,11 +94,11 @@ export default function PropertyPanel() {
                                     <button
                                         key={weight}
                                         onClick={() => updateScaleItem(selectedScale.id, { weight })}
-                                        className={`px-2 py-1.5 text-xs font-medium rounded-md border transition-colors ${selectedScale.weight === weight
-                                            ? 'bg-blue-600 border-blue-600 text-white'
+                                        className={`px-2 py-1.5 text-xs font-medium rounded-md ring-1 ring-inset transition-colors ${selectedScale.weight === weight
+                                            ? 'bg-blue-600 ring-blue-600 text-white'
                                             : isDarkMode
-                                                ? 'bg-[#222222] border-[#2e2e2e] text-gray-300 hover:border-[#3e3e3e]'
-                                                : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                                                ? 'bg-[#222222] ring-[#2e2e2e] text-gray-300 hover:ring-[#3e3e3e]'
+                                                : 'bg-white ring-gray-200 text-gray-700 hover:ring-gray-300'
                                             }`}
                                     >
                                         {weight}
@@ -131,9 +131,9 @@ export default function PropertyPanel() {
                                 type="text"
                                 value={selectedScale.usage}
                                 onChange={(e) => updateScaleItem(selectedScale.id, { usage: e.target.value })}
-                                className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isDarkMode
-                                    ? 'bg-[#222222] border-[#2e2e2e] text-white placeholder-gray-500'
-                                    : 'bg-white border-gray-300 text-gray-900'
+                                className={`w-full px-3 py-2 ring-1 ring-inset rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-transparent transition-all ${isDarkMode
+                                    ? 'bg-[#222222] ring-[#2e2e2e] text-white placeholder-gray-500'
+                                    : 'bg-white ring-gray-300 text-gray-900'
                                     }`}
                                 placeholder="예: 페이지 타이틀"
                             />
@@ -144,9 +144,9 @@ export default function PropertyPanel() {
                         {/* Reset Button */}
                         <button
                             onClick={() => resetScaleItem(selectedScale.id)}
-                            className={`w-full flex items-center justify-center px-4 py-2 border rounded-md text-sm transition-colors ${isDarkMode
-                                ? 'border-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
-                                : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                            className={`w-full flex items-center justify-center px-4 py-2 ring-1 ring-inset rounded-md text-sm transition-colors ${isDarkMode
+                                ? 'ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
+                                : 'ring-gray-200 text-gray-600 hover:bg-gray-50'
                                 }`}
                         >
                             <RotateCcw className="w-4 h-4 mr-2" />
@@ -165,9 +165,9 @@ export default function PropertyPanel() {
                                 type="text"
                                 value={selectedToken.name}
                                 onChange={(e) => updateToken(selectedToken.id, { name: e.target.value })}
-                                className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isDarkMode
-                                    ? 'bg-[#222222] border-[#2e2e2e] text-white'
-                                    : 'bg-white border-gray-300 text-gray-900'
+                                className={`w-full px-3 py-2 ring-1 ring-inset rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-transparent transition-all ${isDarkMode
+                                    ? 'bg-[#222222] ring-[#2e2e2e] text-white'
+                                    : 'bg-white ring-gray-300 text-gray-900'
                                     }`}
                                 placeholder="예: Primary 500"
                             />
@@ -191,9 +191,9 @@ export default function PropertyPanel() {
                                     type="text"
                                     value={selectedToken.value}
                                     onChange={(e) => updateToken(selectedToken.id, { value: e.target.value })}
-                                    className={`flex-1 px-3 py-2 border rounded-md text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isDarkMode
-                                        ? 'bg-[#222222] border-[#2e2e2e] text-white'
-                                        : 'bg-white border-gray-300 text-gray-900'
+                                    className={`flex-1 px-3 py-2 ring-1 ring-inset rounded-md text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-transparent transition-all ${isDarkMode
+                                        ? 'bg-[#222222] ring-[#2e2e2e] text-white'
+                                        : 'bg-white ring-gray-300 text-gray-900'
                                         }`}
                                 />
                             </div>
@@ -215,7 +215,7 @@ export default function PropertyPanel() {
                                 removeToken(selectedToken.id);
                                 clearSelection();
                             }}
-                            className="w-full flex items-center justify-center px-4 py-2 border border-red-200 text-red-600 rounded-md text-sm hover:bg-red-50 transition-colors"
+                            className="w-full flex items-center justify-center px-4 py-2 ring-1 ring-inset ring-red-200 text-red-600 rounded-md text-sm hover:bg-red-50 transition-colors"
                         >
                             <Trash2 className="w-4 h-4 mr-2" />
                             토큰 삭제

@@ -205,7 +205,7 @@ export default function BuilderPage() {
                 <div className="lg:col-span-7 space-y-10">
 
                     {/* 1. Brand Color Selection */}
-                    <section className={`rounded-2xl border p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
+                    <section className={`rounded-2xl ring-1 ring-inset p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                         }`}>
                         <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             Brand
@@ -273,7 +273,7 @@ export default function BuilderPage() {
                     </section>
 
                     {/* 2. Neutral Color Selection */}
-                    <section className={`rounded-2xl border p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
+                    <section className={`rounded-2xl ring-1 ring-inset p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                         }`}>
                         <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             Neutral
@@ -321,7 +321,7 @@ export default function BuilderPage() {
                                             </AnimatePresence>
 
                                             {isRecommended && (
-                                                <span className={`absolute -top-2 -right-1 bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm z-10 border ${isDarkMode ? 'border-[#191919]' : 'border-white'
+                                                <span className={`absolute -top-2 -right-1 bg-blue-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm z-10 ring-1 ring-inset ${isDarkMode ? 'ring-[#191919]' : 'ring-white'
                                                     }`}>
                                                     추천
                                                 </span>
@@ -356,7 +356,7 @@ export default function BuilderPage() {
                         const currentScale = getScale(group.state);
 
                         return (
-                            <section key={group.role} className={`rounded-2xl border p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'
+                            <section key={group.role} className={`rounded-2xl ring-1 ring-inset p-6 flex flex-col gap-10 transition-colors ${isDarkMode ? 'bg-slate-900 ring-slate-800' : 'bg-white ring-gray-200'
                                 }`}>
                                 <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                     {group.label}
@@ -433,9 +433,9 @@ export default function BuilderPage() {
                             <LivePreview />
                         </ThemeInjector>
 
-                        <div className={`text-xs px-2 p-2 rounded border flex items-center gap-2 transition-colors ${isDarkMode
-                            ? 'bg-[#222222] border-[#2e2e2e] text-green-400'
-                            : 'bg-green-50 border-green-100 text-green-600'
+                        <div className={`text-xs px-2 p-2 rounded ring-1 ring-inset flex items-center gap-2 transition-colors ${isDarkMode
+                            ? 'bg-[#222222] ring-[#2e2e2e] text-green-400'
+                            : 'bg-green-50 ring-green-100 text-green-600'
                             }`}>
                             <Check className="w-3 h-3" />
                             선택하신 색상이 프리뷰에 즉시 반영됩니다.

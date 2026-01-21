@@ -1,34 +1,64 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Layers, Box, Component, Palette, Type, Ruler } from 'lucide-react';
+import { Layers, Box, Component, Palette, Type, Ruler, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useBuilderStore } from '@/stores/useBuilderStore';
+import { useTokenStore } from '@/stores/useTokenStore';
 
 // Navigation items configuration
 const NAV_ITEMS = {
     foundation: [
-        { href: '/builder', icon: Palette, label: '색상 (Colors)' },
-        { href: '/builder/typography', icon: Type, label: '타이포그래피' },
-        { href: '/builder/spacing', icon: Ruler, label: '간격 (Spacing)' },
+        { href: '/builder', icon: Palette, label: '색상 (Colors)', type: 'color' },
+        { href: '/builder/typography', icon: Type, label: '타이포그래피', type: 'typography' },
+        { href: '/builder/spacing', icon: Ruler, label: '간격 (Spacing)', type: 'spacing' },
     ],
     components: [
-        { href: '/builder/atoms', icon: Box, label: '아톰 (Atoms)' },
-        { href: '/builder/molecules', icon: Component, label: '몰리큘 (Molecules)' },
-        { href: '/builder/organisms', icon: Layers, label: '오가니즘 (Organisms)' },
+        { href: '/builder/atoms', icon: Box, label: '아톰 (Atoms)', type: 'atoms' },
+        { href: '/builder/molecules', icon: Component, label: '몰리큘 (Molecules)', type: 'molecules' },
+        { href: '/builder/organisms', icon: Layers, label: '오가니즘 (Organisms)', type: 'organisms' },
     ],
 };
 
 export default function Sidebar() {
     const pathname = usePathname();
     const { isDarkMode } = useBuilderStore();
+    const { tokens } = useTokenStore();
 
     const isActive = (href: string) => pathname === href;
 
+    // Check if a section is "complete" (has tokens)
+    const isSectionComplete = (type: string) => {
+        if (type === 'color') return tokens.some(t => t.type === 'color' && t.id.startsWith('primary-'));
+        if (type === 'typography') return tokens.some(t => t.type === 'typography');
+        if (type === 'spacing') return tokens.some(t => t.type === 'spacing');
+        return false;
+    };
+
+    const totalSteps = NAV_ITEMS.foundation.length;
+    const completedSteps = NAV_ITEMS.foundation.filter(item => isSectionComplete(item.type)).length;
+    const progressPercent = Math.round((completedSteps / totalSteps) * 100);
+
     return (
-        <div className={`w-64 border-r h-full flex flex-col transition-colors duration-300 ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
-            }`}>
-            <div className={`h-14 border-b flex items-center px-6 transition-colors duration-300 ${isDarkMode ? 'border-[#222222]' : 'border-gray-200'
-                }`}>
+        <div className={`w-64 h-full flex flex-col transition-colors duration-300 ${isDarkMode ? 'bg-[#191919]' : 'bg-white'
+            }`}
+            style={{ boxShadow: isDarkMode ? 'inset -1px 0 0 0 #222222' : 'inset -1px 0 0 0 #e5e7eb' }}>
+            <div className={`h-14 flex items-center px-6 transition-colors duration-300`}
+                style={{ boxShadow: isDarkMode ? 'inset 0 -1px 0 0 #222222' : 'inset 0 -1px 0 0 #e5e7eb' }}>
                 <h1 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Atomic</h1>
+            </div>
+
+            <div className={`px-6 py-4`} style={{ boxShadow: isDarkMode ? 'inset 0 -1px 0 0 #222222' : 'inset 0 -1px 0 0 #f3f4f6' }}>
+                <div className="flex items-center justify-between mb-2">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>System Progress</span>
+                    <span className="text-[10px] font-bold text-blue-500">{progressPercent}%</span>
+                </div>
+                <div className={`h-1.5 w-full rounded-full overflow-hidden ${isDarkMode ? 'bg-[#222222]' : 'bg-gray-100'}`}>
+                    <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progressPercent}%` }}
+                        className="h-full bg-blue-600 rounded-full"
+                    />
+                </div>
             </div>
 
             <div className="flex-1 overflow-y-auto py-4">
@@ -45,17 +75,22 @@ export default function Sidebar() {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`w-full flex items-center px-2 py-2 text-sm font-medium rounded-md group transition-colors ${active
-                                        ? isDarkMode
-                                            ? 'bg-blue-600/20 text-blue-400'
-                                            : 'bg-blue-50 text-blue-600'
-                                        : isDarkMode
-                                            ? 'text-gray-300 hover:bg-[#222222]'
-                                            : 'text-gray-700 hover:bg-gray-100'
+                                className={`w-full flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md group transition-colors ${active
+                                    ? isDarkMode
+                                        ? 'bg-blue-600/20 text-blue-400'
+                                        : 'bg-blue-50 text-blue-600'
+                                    : isDarkMode
+                                        ? 'text-gray-300 hover:bg-[#222222]'
+                                        : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
-                                <Icon className={`mr-3 h-4 w-4 ${active ? 'text-blue-500' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                                {item.label}
+                                <div className="flex items-center">
+                                    <Icon className={`mr-3 h-4 w-4 ${active ? 'text-blue-500' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                                    {item.label}
+                                </div>
+                                {isSectionComplete(item.type) && (
+                                    <CheckCircle2 className={`h-3.5 w-3.5 ${active ? 'text-blue-500' : 'text-green-500'}`} />
+                                )}
                             </Link>
                         );
                     })}
@@ -74,16 +109,21 @@ export default function Sidebar() {
                                 key={item.href}
                                 href={item.href}
                                 className={`w-full flex items-center px-2 py-2 text-sm font-medium rounded-md group transition-colors ${active
-                                        ? isDarkMode
-                                            ? 'bg-blue-600/20 text-blue-400'
-                                            : 'bg-blue-50 text-blue-600'
-                                        : isDarkMode
-                                            ? 'text-gray-300 hover:bg-[#222222]'
-                                            : 'text-gray-700 hover:bg-gray-100'
+                                    ? isDarkMode
+                                        ? 'bg-blue-600/20 text-blue-400'
+                                        : 'bg-blue-50 text-blue-600'
+                                    : isDarkMode
+                                        ? 'text-gray-300 hover:bg-[#222222]'
+                                        : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
-                                <Icon className={`mr-3 h-4 w-4 ${active ? 'text-blue-500' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                                {item.label}
+                                <div className="flex items-center">
+                                    <Icon className={`mr-3 h-4 w-4 ${active ? 'text-blue-500' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                                    {item.label}
+                                </div>
+                                {isSectionComplete(item.type) && (
+                                    <CheckCircle2 className={`h-3.5 w-3.5 ${active ? 'text-blue-500' : 'text-green-500'}`} />
+                                )}
                             </Link>
                         );
                     })}

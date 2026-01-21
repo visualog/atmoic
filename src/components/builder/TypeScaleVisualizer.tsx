@@ -35,13 +35,13 @@ const ScaleItem = ({
         >
             <div
                 onClick={() => onSelect(item)}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 group flex items-start gap-3 cursor-pointer ${isSelected
+                className={`w-full text-left p-4 rounded-xl ring-1 ring-inset transition-all duration-200 group flex items-start gap-3 cursor-pointer ${isSelected
                     ? isDarkMode
-                        ? 'bg-blue-600/20 border-blue-500/50'
-                        : 'bg-blue-50 border-blue-300'
+                        ? 'bg-blue-600/20 ring-blue-500/50'
+                        : 'bg-blue-50 ring-blue-300'
                     : isDarkMode
-                        ? 'bg-[#191919] border-[#2e2e2e] hover:border-[#3e3e3e]'
-                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                        ? 'bg-[#191919] ring-[#2e2e2e] hover:ring-[#3e3e3e]'
+                        : 'bg-gray-50 ring-gray-200 hover:ring-gray-300'
                     }`}
             >
                 {/* Drag Handle */}

@@ -15,9 +15,15 @@ export default function TypographyPage() {
     const { selectedFont, setSelectedFont, typeScale, resetTypeScale, generateTypeScale } = useTypographyStore();
     const { isDarkMode } = useBuilderStore();
     const { addToken, removeToken, getTokensByType } = useTokenStore();
+    const [viewport, setViewport] = React.useState<'mobile' | 'desktop'>('desktop');
 
     const [baseSize, setBaseSize] = React.useState(16);
     const [ratio, setRatio] = React.useState(1.25);
+    const [isConfirming, setIsConfirming] = React.useState(false);
+
+    // Get primary color from tokens
+    const tokens = getTokensByType('color');
+    const primaryColor = tokens.find(t => t.id === 'primary-600')?.value || tokens.find(t => t.id === 'primary-500')?.value || '#3b82f6';
 
     // Generate typography tokens
     const typographyTokens = useMemo(() => {
@@ -66,9 +72,9 @@ export default function TypographyPage() {
                 </div>
                 <button
                     onClick={resetTypeScale}
-                    className={`flex items-center px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors ${isDarkMode
-                        ? 'bg-[#191919] border-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
-                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                    className={`flex items-center px-3 py-1.5 text-sm font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
+                        ? 'bg-[#191919] ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
+                        : 'bg-white ring-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                 >
                     <RotateCcw className="w-4 h-4 mr-2" />
@@ -95,14 +101,15 @@ export default function TypographyPage() {
                                     <motion.button
                                         key={font.name}
                                         onClick={() => setSelectedFont(font)}
-                                        className={`relative p-4 rounded-xl border text-left transition-colors ${isSelected
+                                        className={`relative p-4 rounded-xl ring-1 ring-inset text-left transition-colors ${isSelected
                                             ? isDarkMode
-                                                ? 'bg-blue-600/20 border-blue-500/50'
-                                                : 'bg-blue-50 border-blue-300'
+                                                ? 'bg-blue-600/20 ring-blue-500/50'
+                                                : ''
                                             : isDarkMode
-                                                ? 'bg-[#222222] border-[#2e2e2e] hover:border-[#3e3e3e]'
-                                                : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                                                ? 'bg-[#222222] ring-[#2e2e2e] hover:ring-[#3e3e3e]'
+                                                : 'bg-gray-50 ring-gray-200 hover:ring-gray-300'
                                             }`}
+                                        style={isSelected && !isDarkMode ? { backgroundColor: `${primaryColor}10`, borderColor: `${primaryColor}50` } : {}}
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                     >
@@ -117,7 +124,7 @@ export default function TypographyPage() {
                                                         animate={{ opacity: 1, scale: 1 }}
                                                         exit={{ opacity: 0, scale: 0.5 }}
                                                     >
-                                                        <Check className="w-4 h-4 text-blue-500" />
+                                                        <Check className="w-4 h-4" style={{ color: primaryColor }} />
                                                     </motion.span>
                                                 )}
                                             </AnimatePresence>
@@ -135,7 +142,7 @@ export default function TypographyPage() {
                     </section>
 
                     {/* 2. Modular Scale Generator */}
-                    <section className={`rounded-2xl border p-6 transition-colors ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'}`}>
+                    <section className={`rounded-2xl ring-1 ring-inset p-6 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'}`}>
                         <h3 className={`text-lg font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             자동 스케일 생성 (Modular Scale)
                         </h3>
@@ -149,7 +156,7 @@ export default function TypographyPage() {
                                         type="number"
                                         value={baseSize}
                                         onChange={(e) => setBaseSize(Number(e.target.value))}
-                                        className={`w-full h-11 px-3 rounded-lg border focus:ring-2 focus:ring-blue-500 focus:outline-none ${isDarkMode ? 'bg-[#222222] border-[#2e2e2e] text-white' : 'bg-gray-50 border-gray-200 text-gray-900'
+                                        className={`w-full h-11 px-3 rounded-lg ring-1 ring-inset focus:ring-2 focus:ring-blue-500 focus:outline-none ${isDarkMode ? 'bg-[#222222] ring-[#2e2e2e] text-white' : 'bg-gray-50 ring-gray-200 text-gray-900'
                                             }`}
                                     />
                                     <span className="absolute right-3 top-3.5 text-xs text-gray-500">px</span>
@@ -164,7 +171,7 @@ export default function TypographyPage() {
                                     <select
                                         value={ratio}
                                         onChange={(e) => setRatio(parseFloat(e.target.value))}
-                                        className={`w-full h-11 px-3 pr-10 rounded-lg border appearance-none focus:ring-2 focus:ring-blue-500 focus:outline-none ${isDarkMode ? 'bg-[#222222] border-[#2e2e2e] text-white' : 'bg-gray-50 border-gray-200 text-gray-900'
+                                        className={`w-full h-11 px-3 pr-10 rounded-lg ring-1 ring-inset appearance-none focus:ring-2 focus:ring-blue-500 focus:outline-none ${isDarkMode ? 'bg-[#222222] ring-[#2e2e2e] text-white' : 'bg-gray-50 ring-gray-200 text-gray-900'
                                             }`}
                                     >
                                         <option value="1.067">1.067 (Minor Second)</option>
@@ -189,17 +196,28 @@ export default function TypographyPage() {
                                     Action
                                 </label>
                                 <button
-                                    onClick={() => generateTypeScale(baseSize, ratio)}
-                                    className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors whitespace-nowrap"
+                                    onClick={() => {
+                                        if (isConfirming) {
+                                            generateTypeScale(baseSize, ratio);
+                                            setIsConfirming(false);
+                                        } else {
+                                            setIsConfirming(true);
+                                            setTimeout(() => setIsConfirming(false), 3000);
+                                        }
+                                    }}
+                                    className={`h-11 px-6 font-medium rounded-lg transition-all whitespace-nowrap ${isConfirming
+                                        ? 'bg-amber-500 hover:bg-amber-600 text-white animate-pulse'
+                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                        }`}
                                 >
-                                    생성하기 (Generate)
+                                    {isConfirming ? '정말 생성할까요?' : '생성하기 (Generate)'}
                                 </button>
                             </div>
                         </div>
                     </section>
 
                     {/* 3. Type Scale */}
-                    <section className={`rounded-2xl border p-6 transition-colors ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
+                    <section className={`rounded-2xl ring-1 ring-inset p-6 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                         }`}>
                         <div className="flex items-center justify-between mb-6">
                             <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -217,21 +235,47 @@ export default function TypographyPage() {
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-5">
                     <div className="sticky top-8 space-y-4">
-                        <div className={`rounded-2xl border p-6 transition-colors ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
+                        <div className={`rounded-2xl ring-1 ring-inset p-6 transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                             }`}>
-                            <div className="flex items-center gap-2 mb-6">
-                                <div className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-green-400' : 'bg-green-500'}`} />
-                                <span className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                                    Live Preview
-                                </span>
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-green-400' : 'bg-green-500'}`} />
+                                    <span className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                                        Live Preview
+                                    </span>
+                                </div>
+                                <div className={`flex items-center p-1 rounded-lg ring-1 ring-inset ${isDarkMode ? 'bg-[#222222] ring-[#2e2e2e]' : 'bg-gray-100 ring-gray-200'}`}>
+                                    <button
+                                        onClick={() => setViewport('desktop')}
+                                        className={`px-2 py-1 rounded text-[10px] font-bold transition-all ${viewport === 'desktop'
+                                            ? 'bg-blue-600 text-white shadow-sm'
+                                            : isDarkMode ? 'text-gray-500 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'
+                                            }`}
+                                    >
+                                        Desktop
+                                    </button>
+                                    <button
+                                        onClick={() => setViewport('mobile')}
+                                        className={`px-2 py-1 rounded text-[10px] font-bold transition-all ${viewport === 'mobile'
+                                            ? 'bg-blue-600 text-white shadow-sm'
+                                            : isDarkMode ? 'text-gray-500 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'
+                                            }`}
+                                    >
+                                        Mobile
+                                    </button>
+                                </div>
                             </div>
 
                             <div
-                                style={{ fontFamily: selectedFont.value }}
-                                className="space-y-6"
+                                style={{
+                                    fontFamily: selectedFont.value,
+                                    maxWidth: viewport === 'mobile' ? '320px' : 'none',
+                                    margin: viewport === 'mobile' ? '0 auto' : '0'
+                                }}
+                                className={`space-y-6 transition-all duration-500 ${viewport === 'mobile' ? 'scale-[0.9] sm:scale-100' : ''}`}
                             >
                                 {/* 1. Card Component Sample */}
-                                <div className={`rounded-xl border p-4 ${isDarkMode ? 'bg-[#222222] border-[#2e2e2e]' : 'bg-gray-50 border-gray-200'}`}>
+                                <div className={`rounded-xl ring-1 ring-inset p-4 ${isDarkMode ? 'bg-[#222222] ring-[#2e2e2e]' : 'bg-gray-50 ring-gray-200'}`}>
                                     <p
                                         style={{ fontSize: `${typeScale.find(t => t.id === 'heading-sm')?.size || 20}px`, fontWeight: 600, lineHeight: 1.35, letterSpacing: `${(typeScale.find(t => t.id === 'heading-sm')?.letterSpacing || 0) / 100}em` }}
                                         className={isDarkMode ? 'text-white' : 'text-gray-900'}
@@ -246,8 +290,14 @@ export default function TypographyPage() {
                                     </p>
                                     <div className="flex items-center gap-2 mt-3">
                                         <span
-                                            style={{ fontSize: `${typeScale.find(t => t.id === 'label-md')?.size || 14}px`, fontWeight: 600, lineHeight: 1.4, letterSpacing: `${(typeScale.find(t => t.id === 'label-md')?.letterSpacing || 0) / 100}em` }}
-                                            className={`px-3 py-1.5 rounded-lg ${isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'}`}
+                                            style={{
+                                                fontSize: `${typeScale.find(t => t.id === 'label-md')?.size || 14}px`,
+                                                fontWeight: 600,
+                                                lineHeight: 1.4,
+                                                letterSpacing: `${(typeScale.find(t => t.id === 'label-md')?.letterSpacing || 0) / 100}em`,
+                                                backgroundColor: primaryColor
+                                            }}
+                                            className="px-3 py-1.5 rounded-lg text-white"
                                         >
                                             버튼
                                         </span>
@@ -269,7 +319,7 @@ export default function TypographyPage() {
                                         >
                                             이메일
                                         </label>
-                                        <div className={`px-3 py-2 rounded-lg border ${isDarkMode ? 'bg-[#2e2e2e] border-[#3e3e3e] text-gray-400' : 'bg-white border-gray-300 text-gray-400'}`}>
+                                        <div className={`px-3 py-2 rounded-lg ring-1 ring-inset ${isDarkMode ? 'bg-[#2e2e2e] ring-[#3e3e3e] text-gray-400' : 'bg-white ring-gray-300 text-gray-400'}`}>
                                             <span style={{ fontSize: `${typeScale.find(t => t.id === 'body-md')?.size || 16}px`, fontWeight: 400, letterSpacing: `${(typeScale.find(t => t.id === 'body-md')?.letterSpacing || 0) / 100}em` }}>
                                                 example@email.com
                                             </span>
@@ -284,7 +334,7 @@ export default function TypographyPage() {
                                 </div>
 
                                 {/* 3. Table Header / Tags Sample */}
-                                <div className={`rounded-lg border overflow-hidden ${isDarkMode ? 'border-[#2e2e2e]' : 'border-gray-200'}`}>
+                                <div className={`rounded-lg ring-1 ring-inset overflow-hidden ${isDarkMode ? 'ring-[#2e2e2e]' : 'ring-gray-200'}`}>
                                     <div className={`px-4 py-2 ${isDarkMode ? 'bg-[#2e2e2e]' : 'bg-gray-100'}`}>
                                         <div className="grid grid-cols-[1fr_60px_100px] gap-4 items-center">
                                             <span
@@ -333,9 +383,9 @@ export default function TypographyPage() {
                             </div>
                         </div>
 
-                        <div className={`text-xs px-2 p-2 rounded border flex items-center gap-2 transition-colors ${isDarkMode
-                            ? 'bg-[#222222] border-[#2e2e2e] text-green-400'
-                            : 'bg-green-50 border-green-100 text-green-600'
+                        <div className={`text-xs px-2 p-2 rounded ring-1 ring-inset flex items-center gap-2 transition-colors ${isDarkMode
+                            ? 'bg-[#222222] ring-[#2e2e2e] text-green-400'
+                            : 'bg-green-50 ring-green-100 text-green-600'
                             }`}>
                             <Check className="w-3 h-3" />
                             선택하신 폰트가 프리뷰에 즉시 반영됩니다.

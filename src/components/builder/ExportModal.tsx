@@ -24,9 +24,9 @@ export default function ExportModal({ isOpen, onClose, tokens }: ExportModalProp
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[80vh] ring-1 ring-inset ring-gray-200">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <div className="flex items-center justify-between px-6 py-4" style={{ boxShadow: 'inset 0 -1px 0 0 #f3f4f6' }}>
                     <div className="flex items-center space-x-2">
                         <div className="p-2 bg-blue-50 rounded-lg">
                             <Code className="w-5 h-5 text-blue-600" />
@@ -49,7 +49,7 @@ export default function ExportModal({ isOpen, onClose, tokens }: ExportModalProp
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+                <div className="px-6 py-4 bg-gray-50 flex justify-end" style={{ boxShadow: 'inset 0 1px 0 0 #f3f4f6' }}>
                     <button
                         onClick={handleCopy}
                         className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-sm"

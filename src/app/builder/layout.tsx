@@ -38,8 +38,9 @@ export default function BuilderLayout({
             {/* 2. Center Canvas (Preview) */}
             <main className="flex-1 overflow-hidden relative flex flex-col">
                 {/* Toolbar Area */}
-                <div className={`h-14 border-b flex items-center px-6 justify-between shrink-0 z-10 transition-colors duration-300 ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
-                    }`}>
+                <div className={`h-14 flex items-center px-6 justify-between shrink-0 z-10 transition-colors duration-300 ${isDarkMode ? 'bg-[#191919]' : 'bg-white'
+                    }`}
+                    style={{ boxShadow: isDarkMode ? 'inset 0 -1px 0 0 #222222' : 'inset 0 -1px 0 0 #e5e7eb' }}>
                     <div className="flex items-center space-x-2 text-sm text-gray-500">
                         <span className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>아토믹</span>
                         <span>/</span>
@@ -68,7 +69,7 @@ export default function BuilderLayout({
 
                 {/* Canvas Area */}
                 <div className={`flex-1 overflow-auto p-8 transition-colors duration-300 ${isDarkMode ? 'bg-[#111111]' : 'bg-gray-100'}`}>
-                    <div className={`min-h-full rounded-xl shadow-sm border p-8 transition-colors duration-300 ${isDarkMode ? 'bg-[#191919] border-[#222222]' : 'bg-white border-gray-200'
+                    <div className={`min-h-full rounded-xl shadow-sm ring-1 ring-inset p-8 transition-colors duration-300 ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'
                         }`}>
                         {children}
                     </div>
@@ -79,9 +80,10 @@ export default function BuilderLayout({
             <div
                 className={clsx(
                     "h-full transition-[width,colors] duration-300 ease-in-out overflow-hidden shadow-xl z-20",
-                    isDarkMode ? "bg-[#191919] border-[#222222]" : "bg-white border-gray-200", // Dynamic colors
-                    selectedId ? "w-80 border-l" : "w-0 border-none"
+                    isDarkMode ? "bg-[#191919]" : "bg-white", // Dynamic colors
+                    selectedId ? "w-80" : "w-0"
                 )}
+                style={selectedId ? { boxShadow: isDarkMode ? 'inset 1px 0 0 0 #222222' : 'inset 1px 0 0 0 #e5e7eb' } : {}}
             >
                 <div className="w-80 h-full"> {/* Inner container to fix width */}
                     <PropertyPanel />
