@@ -14,7 +14,7 @@ export default function SpacingVisualizer() {
 
     // Get primary color from tokens
     const tokens = getTokensByType('color');
-    const primaryColor = tokens.find(t => t.id === 'primary-600')?.value || tokens.find(t => t.id === 'primary-500')?.value || '#3b82f6';
+    const primaryColor = tokens.find(t => t.name === 'Primary 9')?.value || tokens.find(t => t.name === 'Primary 6')?.value || '#3b82f6';
 
     return (
         <div className="space-y-4">
@@ -24,19 +24,20 @@ export default function SpacingVisualizer() {
                 </span>
                 <div className="flex items-center text-[10px] text-gray-500 gap-2">
                     <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-sm border" style={{ backgroundColor: `${primaryColor}20`, borderColor: `${primaryColor}30` }}></div>
+                        <div className="w-2 h-2 rounded-sm ring-1 ring-inset ring-blue-500/20" style={{ backgroundColor: `${primaryColor}20` }}></div>
                         <span>Visualization</span>
                     </div>
                 </div>
             </div>
 
             <div className={`rounded-2xl ring-1 ring-inset ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-white ring-gray-200'}`}>
-                <div className="overflow-hidden">
-                    {spacingScale.map((item) => (
+                <div className="overflow-hidden p-[1px] -m-[1px]"> {/* Prevent clipping of item borders */}
+                    {spacingScale.map((item, index) => (
                         <SpacingItemRow
                             key={item.id}
                             item={item}
                             isSelected={selectedSpacingId === item.id}
+                            isLast={index === spacingScale.length - 1}
                             onSelect={() => selectSpacingItem(item.id)}
                             isDarkMode={isDarkMode}
                             primaryColor={primaryColor}
@@ -51,31 +52,53 @@ export default function SpacingVisualizer() {
 function SpacingItemRow({
     item,
     isSelected,
+    isLast,
     onSelect,
     isDarkMode,
     primaryColor
 }: {
     item: SpacingItem;
     isSelected: boolean;
+    isLast: boolean;
     onSelect: () => void;
     isDarkMode: boolean;
     primaryColor: string;
 }) {
+    const [isHovered, setIsHovered] = React.useState(false);
     // rem value calculation (assuming 16px base)
     const remValue = (item.value / 16).toFixed(3).replace(/\.?0+$/, '');
+
+    const borderColor = isDarkMode ? '#1a1a1a' : '#eceef2';
 
     return (
         <div
             onClick={onSelect}
-            className={`group relative flex items-center p-4 cursor-pointer transition-all duration-200 border-b last:border-b-0 ${isSelected
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className={`group relative flex items-center p-4 cursor-pointer transition-all duration-200 ${isSelected
                 ? ''
-                : isDarkMode ? 'hover:bg-[#222222] border-[#222222]' : 'hover:bg-gray-50 border-gray-100'
+                : isDarkMode ? 'hover:bg-[#222222]' : 'hover:bg-gray-50'
                 }`}
-            style={isSelected ? { backgroundColor: isDarkMode ? `${primaryColor}15` : `${primaryColor}08` } : {}}
+            style={{
+                backgroundColor: isSelected
+                    ? (isDarkMode ? `${primaryColor}15` : `${primaryColor}08`)
+                    : undefined,
+                boxShadow: isLast ? 'none' : `inset 0 -1px 0 0 ${borderColor}`
+            }}
         >
+            {/* Hover/Selection Highlight Overlay */}
+            {(isSelected || isHovered) && (
+                <div
+                    className="absolute inset-0 z-10 pointer-events-none ring-1 ring-inset transition-opacity duration-200"
+                    style={{
+                        boxShadow: `inset 0 0 0 1.5px ${isSelected ? `${primaryColor}` : `${primaryColor}90`}`
+                    }}
+                />
+            )}
+
             {/* Selection Indicator */}
             {isSelected && (
-                <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: primaryColor }}></div>
+                <div className="absolute left-0 top-0 bottom-0 w-1 z-20" style={{ backgroundColor: primaryColor }}></div>
             )}
 
             {/* Info Section */}
@@ -100,18 +123,18 @@ function SpacingItemRow({
 
             {/* Visualization Bar */}
             <div className="flex-1 px-4">
-                <div className="relative h-6 flex items-center">
+                <div
+                    className="relative h-6 flex items-center"
+                >
                     <div
-                        className={`h-full rounded transition-all duration-300 ${isSelected
-                            ? 'ring-inset ring-1'
-                            : 'ring-inset ring-1'
-                            }`}
+                        className="h-full rounded transition-all duration-300"
                         style={{
                             width: `${Math.min(item.value * 2, 100)}%`,
                             maxWidth: `${item.value}px`,
-                            backgroundColor: isSelected ? `${primaryColor}40` : `${primaryColor}15`,
-                            borderColor: isSelected ? `${primaryColor}60` : `${primaryColor}20`,
-                            boxShadow: isSelected ? `0 0 0 2px ${primaryColor}10` : 'none'
+                            backgroundColor: isSelected ? `${primaryColor}40` : (isHovered ? `${primaryColor}25` : `${primaryColor}15`),
+                            boxShadow: `
+                                    inset 0 0 0 1px ${isSelected ? `${primaryColor}60` : (isHovered ? `${primaryColor}40` : `${primaryColor}20`)}${isSelected ? `, 0 0 0 2px ${primaryColor}10` : ''}
+                                `
                         }}
                     ></div>
 

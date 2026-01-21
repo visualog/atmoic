@@ -126,7 +126,7 @@ export default function LivePreview() {
                             <input
                                 type="text"
                                 placeholder="Enter project name..."
-                                className="w-full px-3 py-2 border rounded-lg text-sm transition-all outline-none ring-2 ring-transparent focus:ring-opacity-20 placeholder:text-[var(--neutral-9)]"
+                                className="w-full px-3 py-2 rounded-lg text-sm transition-all outline-none ring-2 ring-transparent focus:ring-opacity-20 placeholder:text-[var(--neutral-9)]"
                                 style={{
                                     backgroundColor: 'var(--neutral-2, #f9fafb)',
                                     boxShadow: 'inset 0 0 0 1px var(--neutral-6, #e5e7eb)',
@@ -138,7 +138,7 @@ export default function LivePreview() {
                         <div className="flex items-center gap-3">
                             <label className="flex items-center gap-2 text-sm cursor-pointer select-none" style={{ color: 'var(--neutral-11)' }}>
                                 <div
-                                    className="w-5 h-5 rounded border flex items-center justify-center transition-colors"
+                                    className="w-5 h-5 rounded flex items-center justify-center transition-colors"
                                     style={{
                                         boxShadow: 'inset 0 0 0 1px var(--primary-9, #3b82f6)',
                                         backgroundColor: 'var(--primary-9, #3b82f6)'
@@ -162,7 +162,7 @@ export default function LivePreview() {
 
                         {/* Alert */}
                         <div
-                            className="p-3 rounded-lg border flex items-center gap-3"
+                            className="p-3 rounded-lg flex items-center gap-3"
                             style={{
                                 backgroundColor: 'var(--success-2)',
                                 boxShadow: 'inset 0 0 0 1px var(--success-6)',
@@ -177,16 +177,16 @@ export default function LivePreview() {
 
                         {/* Badges Row */}
                         <div className="flex gap-2 flex-wrap">
-                            <span className="px-2 py-1 rounded-md text-xs font-medium border"
-                                style={{ backgroundColor: 'var(--error-2)', borderColor: 'var(--error-6)', color: 'var(--error-11)' }}>
+                            <span className="px-2 py-1 rounded-md text-xs font-medium ring-1 ring-inset"
+                                style={{ backgroundColor: 'var(--error-2)', boxShadow: 'inset 0 0 0 1px var(--error-6)', color: 'var(--error-11)' }}>
                                 오류 발생
                             </span>
-                            <span className="px-2 py-1 rounded-md text-xs font-medium border"
-                                style={{ backgroundColor: 'var(--warning-2)', borderColor: 'var(--warning-6)', color: 'var(--warning-11)' }}>
+                            <span className="px-2 py-1 rounded-md text-xs font-medium ring-1 ring-inset"
+                                style={{ backgroundColor: 'var(--warning-2)', boxShadow: 'inset 0 0 0 1px var(--warning-6)', color: 'var(--warning-11)' }}>
                                 주의 필요
                             </span>
-                            <span className="px-2 py-1 rounded-md text-xs font-medium border"
-                                style={{ backgroundColor: 'var(--info-2)', borderColor: 'var(--info-6)', color: 'var(--info-11)' }}>
+                            <span className="px-2 py-1 rounded-md text-xs font-medium ring-1 ring-inset"
+                                style={{ backgroundColor: 'var(--info-2)', boxShadow: 'inset 0 0 0 1px var(--info-6)', color: 'var(--info-11)' }}>
                                 업데이트 예정
                             </span>
                         </div>
@@ -198,7 +198,7 @@ export default function LivePreview() {
                             승인 대기 게시물
                         </label>
                         <div
-                            className="p-3 rounded-lg border flex items-center justify-between"
+                            className="p-3 rounded-lg flex items-center justify-between"
                             style={{
                                 backgroundColor: 'var(--neutral-1, #ffffff)',
                                 boxShadow: 'inset 0 0 0 1px var(--neutral-6, #e5e7eb)'
@@ -216,10 +216,10 @@ export default function LivePreview() {
 
                             {isApproved ? (
                                 <span
-                                    className="px-3 py-1.5 rounded-md text-xs font-bold border flex items-center gap-1.5"
+                                    className="px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5"
                                     style={{
                                         backgroundColor: 'var(--success-2)',
-                                        borderColor: 'var(--success-6)',
+                                        boxShadow: 'inset 0 0 0 1px var(--success-6)',
                                         color: 'var(--success-11)'
                                     }}
                                 >

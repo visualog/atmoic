@@ -177,8 +177,8 @@ export default function SpacingPage() {
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-5">
                     <div className="sticky top-6 space-y-6">
-                        <section className={`rounded-2xl ring-1 ring-inset p-6 min-h-[600px] transition-colors ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-6">
+                        <section className={`rounded-2xl ring-1 ring-inset min-h-[600px] transition-colors relative ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
+                            <div className="flex items-center justify-between mb-6 p-6 pb-0">
                                 <div className="flex items-center gap-2 text-purple-500">
                                     <Layers className="w-5 h-5" />
                                     <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>실시간 미리보기</h3>
@@ -195,11 +195,11 @@ export default function SpacingPage() {
                                 </button>
                             </div>
 
-                            <div className="relative space-y-8">
+                            <div className="relative">
                                 {/* Grid Overlay */}
                                 {showGrid && (
                                     <div
-                                        className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-10 z-0"
+                                        className="absolute inset-0 pointer-events-none opacity-[0.15] dark:opacity-[0.1] z-20 rounded-2xl ring-1 ring-inset ring-blue-500/10"
                                         style={{
                                             backgroundImage: `
                                                 linear-gradient(to right, ${isDarkMode ? '#3b82f6' : '#3b82f6'} 1px, transparent 1px),
@@ -209,7 +209,8 @@ export default function SpacingPage() {
                                         }}
                                     />
                                 )}
-                                <div className="relative z-10 space-y-8">
+
+                                <div className="relative z-10 space-y-8 p-6">
                                     {/* Sample 1: Card Padding & Gap */}
                                     <div className="space-y-3">
                                         <span className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Card & List (Gap)</span>
