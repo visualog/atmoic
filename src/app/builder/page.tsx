@@ -7,7 +7,8 @@ import ThemeInjector from '@/components/builder/ThemeInjector';
 import LivePreview from '@/components/builder/LivePreview';
 import ScaleVisualizer from '@/components/builder/ScaleVisualizer';
 import StatusMessage from '@/components/builder/StatusMessage';
-import { Check, RotateCcw, Layers } from 'lucide-react';
+import PageHeader from '@/components/builder/PageHeader';
+import { Check, Layers } from 'lucide-react';
 import * as RadixColors from '@radix-ui/colors';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -43,7 +44,7 @@ const RECOMMENDATIONS: Record<string, string[]> = {
 
 export default function BuilderPage() {
     const { tokens, addToken, getTokensByType, removeToken } = useTokenStore();
-    const { selectItem, selectedId, isDarkMode } = useBuilderStore();
+    const { selectItem, selectedId, isDarkMode, setExportModalOpen } = useBuilderStore();
 
     // Semantic Color Options
     const SEMANTIC_OPTIONS = {
@@ -191,27 +192,14 @@ export default function BuilderPage() {
     return (
         <div className="pb-20">
             {/* Page Header */}
-            <div className="mb-10 flex items-center justify-between">
-                <div>
-                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>색상</h2>
-                    <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        Radix UI 시스템을 기반으로 완벽한 조화를 이루는 컬러 팔레트를 선택하세요.
-                    </p>
-                </div>
-                <button
-                    onClick={() => {
-                        const existingIds = getTokensByType('color').map(t => t.id);
-                        existingIds.forEach(id => removeToken(id));
-                    }}
-                    className={`flex items-center px-3 py-1.5 text-sm font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
-                        ? 'bg-[#191919] ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
-                        : 'bg-white ring-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
-                >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    초기화
-                </button>
-            </div>
+            <PageHeader
+                title="색상"
+                description="Radix UI 시스템을 기반으로 완벽한 조화를 이루는 컬러 팔레트를 선택하세요."
+                onReset={() => {
+                    const existingIds = getTokensByType('color').map(t => t.id);
+                    existingIds.forEach(id => removeToken(id));
+                }}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -443,7 +431,7 @@ export default function BuilderPage() {
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-5">
                     <div className="sticky top-6 space-y-4">
-                        <section className={`rounded-2xl ring-1 ring-inset transition-colors overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
+                        <section className={`rounded-2xl ring-2 ring-inset transition-colors overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
                             <div className="flex items-center justify-between p-6 pb-0">
                                 <div className="flex items-center gap-2 text-purple-500">
                                     <Layers className="w-5 h-5" />

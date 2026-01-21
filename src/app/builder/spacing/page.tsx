@@ -6,7 +6,8 @@ import { useBuilderStore } from '@/stores/useBuilderStore';
 import { useTokenStore } from '@/stores/useTokenStore';
 import SpacingVisualizer from '@/components/builder/SpacingVisualizer';
 import StatusMessage from '@/components/builder/StatusMessage';
-import { Ruler, RotateCcw, Grid3X3, Layers } from 'lucide-react';
+import PageHeader from '@/components/builder/PageHeader';
+import { Ruler, Grid3X3, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 // Helper to generate a random ID
@@ -22,7 +23,7 @@ export default function SpacingPage() {
         selectedSpacingId,
         updateSpacingItem
     } = useSpacingStore();
-    const { isDarkMode } = useBuilderStore();
+    const { isDarkMode, setExportModalOpen } = useBuilderStore();
     const { addToken, removeToken, getTokensByType } = useTokenStore();
     const [pendingUnit, setPendingUnit] = React.useState<number | null>(null);
     const [showGrid, setShowGrid] = React.useState(false);
@@ -61,24 +62,11 @@ export default function SpacingPage() {
     return (
         <div className="pb-20">
             {/* Page Header */}
-            <div className="mb-10 flex items-center justify-between">
-                <div>
-                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>간격</h2>
-                    <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        그리드 시스템을 기반으로 일관된 여백과 레이아웃 간격을 정의하세요.
-                    </p>
-                </div>
-                <button
-                    onClick={resetScale}
-                    className={`flex items-center px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors ${isDarkMode
-                        ? 'bg-[#191919] border-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
-                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
-                >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    초기화
-                </button>
-            </div>
+            <PageHeader
+                title="간격"
+                description="그리드 시스템을 기반으로 일관된 여백과 레이아웃 간격을 정의하세요."
+                onReset={resetScale}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* LEFT COLUMN: Configuration */}
@@ -176,9 +164,9 @@ export default function SpacingPage() {
                 </div>
 
                 {/* RIGHT COLUMN: Live Preview */}
-                <div className="lg:col-span-5">
+                <div className="lg:col-span-8">
                     <div className="sticky top-6 space-y-4">
-                        <section className={`rounded-2xl ring-1 ring-inset min-h-[600px] transition-colors relative ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
+                        <section className={`rounded-2xl ring-2 ring-inset min-h-[600px] transition-colors relative overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
                             <div className="flex items-center justify-between mb-6 p-6 pb-0">
                                 <div className="flex items-center gap-2 text-purple-500">
                                     <Layers className="w-5 h-5" />
@@ -283,8 +271,8 @@ export default function SpacingPage() {
                                 </div>
                             </div>
                         </section>
+                        <StatusMessage message="설정하신 간격 시스템이 프리뷰에 즉시 반영됩니다." />
                     </div>
-                    <StatusMessage message="설정하신 간격 시스템이 프리뷰에 즉시 반영됩니다." />
                 </div>
             </div>
         </div>

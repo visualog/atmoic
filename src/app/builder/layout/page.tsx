@@ -5,7 +5,8 @@ import { useLayoutStore, Breakpoint } from '@/stores/useLayoutStore';
 import { useBuilderStore } from '@/stores/useBuilderStore';
 import GridOverlay from '@/components/builder/GridOverlay';
 import StatusMessage from '@/components/builder/StatusMessage';
-import { RotateCcw, Smartphone, Tablet, Monitor, Layout as LayoutIcon, Eye, EyeOff, Layers } from 'lucide-react';
+import PageHeader from '@/components/builder/PageHeader';
+import { Smartphone, Tablet, Monitor, Layout as LayoutIcon, Eye, EyeOff, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function LayoutPage() {
@@ -53,37 +54,22 @@ export default function LayoutPage() {
 
     return (
         <div className="pb-20">
-            {/* Header */}
-            <div className="mb-10 flex items-center justify-between">
-                <div>
-                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>레이아웃</h2>
-                    <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        반응형 그리드 시스템을 정의하여 다양한 기기에서 일관된 배치를 유지하세요.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={toggleOverlay}
-                        className={`flex items-center px-3 py-1.5 text-sm font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
-                            ? 'bg-[#191919] ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
-                            : 'bg-white ring-gray-300 text-gray-700 hover:bg-gray-50'
-                            }`}
-                    >
-                        {isOverlayVisible ? <EyeOff className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
-                        가이드 {isOverlayVisible ? '끄기' : '켜기'}
-                    </button>
-                    <button
-                        onClick={resetLayout}
-                        className={`flex items-center px-3 py-1.5 text-sm font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
-                            ? 'bg-[#191919] ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
-                            : 'bg-white ring-gray-300 text-gray-700 hover:bg-gray-50'
-                            }`}
-                    >
-                        <RotateCcw className="w-4 h-4 mr-2" />
-                        초기화
-                    </button>
-                </div>
-            </div>
+            <PageHeader
+                title="레이아웃"
+                description="Breadpoints와 Grid 설정을 통해 화면 크기에 대응하는 레이아웃 시스템을 정의하세요."
+                onReset={resetLayout}
+            >
+                <button
+                    onClick={toggleOverlay}
+                    className={`flex items-center px-3 py-1.5 text-sm font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
+                        ? 'bg-[#191919] ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
+                        : 'bg-white ring-gray-300 text-gray-700 hover:bg-gray-50'
+                        }`}
+                >
+                    {isOverlayVisible ? <EyeOff className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
+                    가이드 {isOverlayVisible ? '끄기' : '켜기'}
+                </button>
+            </PageHeader>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* LEFT COLUMN: Configuration */}
@@ -135,88 +121,81 @@ export default function LayoutPage() {
                 </div>
 
                 {/* RIGHT COLUMN: Preview */}
-                <div className="lg:col-span-8 sticky top-6 space-y-4">
-                    <section className={`rounded-2xl ring-1 ring-inset transition-colors overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
-                        <div className="flex items-center justify-between p-6 pb-0">
-                            <div className="flex items-center gap-2 text-purple-500">
-                                <Layers className="w-5 h-5" />
-                                <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>실시간 미리보기</h3>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-500 mr-2">
-                                    Width: {activeCheckpoint === 'mobile' ? '100% (Mobile)' : activeCheckpoint === 'tablet' ? '100% (Tablet)' : '100% (Desktop)'}
-                                </span>
-                                <button
-                                    onClick={toggleOverlay}
-                                    className={`flex items-center px-3 py-1.5 text-xs font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
-                                        ? 'bg-[#222222] ring-[#2e2e2e] text-gray-300 hover:bg-[#333]'
-                                        : 'bg-white ring-gray-200 text-gray-700 hover:bg-gray-50'
-                                        }`}
-                                >
-                                    {isOverlayVisible ? <EyeOff className="w-3.5 h-3.5 mr-2" /> : <Eye className="w-3.5 h-3.5 mr-2" />}
-                                    가이드
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Preview Container */}
-                        <div className="relative min-h-[500px] flex flex-col p-6 pt-6">
-                            {/* Grid Overlay inside Preview */}
-                            <GridOverlay show={isOverlayVisible} />
-
-                            {/* Simulated Content */}
-                            <div className="relative z-10 flex-1 flex flex-col pt-8 pb-8"
-                                style={{
-                                    paddingLeft: `${currentConfig.margin}px`,
-                                    paddingRight: `${currentConfig.margin}px`
-                                }}>
-
-                                {/* Header Simulation */}
-                                <div className="h-12 w-full mb-8 rounded-lg bg-gray-200 dark:bg-[#222] flex items-center px-4">
-                                    <div className="w-20 h-4 bg-gray-300 dark:bg-[#333] rounded"></div>
-                                    <div className="ml-auto w-8 h-8 rounded-full bg-gray-300 dark:bg-[#333]"></div>
+                <div className="lg:col-span-8">
+                    <div className="sticky top-6 space-y-4">
+                        <section className={`rounded-2xl ring-2 ring-inset transition-colors overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
+                            <div className="flex items-center justify-between p-6 pb-0">
+                                <div className="flex items-center gap-2 text-purple-500">
+                                    <Layers className="w-5 h-5" />
+                                    <h3 className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>실시간 미리보기</h3>
                                 </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500 mr-2">
+                                        Width: {activeCheckpoint === 'mobile' ? '100% (Mobile)' : activeCheckpoint === 'tablet' ? '100% (Tablet)' : '100% (Desktop)'}
+                                    </span>
+                                    {/* The guide button was moved to PageHeader */}
+                                </div>
+                            </div>
 
-                                {/* Grid Layout Content */}
-                                <div
+                            {/* Preview Container */}
+                            <div className="relative min-h-[500px] flex flex-col p-6 pt-6">
+                                {/* Grid Overlay inside Preview */}
+                                <GridOverlay show={isOverlayVisible} />
+
+                                {/* Simulated Content */}
+                                <div className="relative z-10 flex-1 flex flex-col pt-8 pb-8"
                                     style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: `repeat(${currentConfig.columns}, 1fr)`,
-                                        gap: `${currentConfig.gutter}px`
-                                    }}
-                                >
-                                    <div className={`col-span-full h-32 rounded-xl mb-6 flex items-center justify-center text-sm font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400`}>
-                                        Hero Section (Full Width)
+                                        paddingLeft: `${currentConfig.margin}px`,
+                                        paddingRight: `${currentConfig.margin}px`
+                                    }}>
+
+                                    {/* Header Simulation */}
+                                    <div className="h-12 w-full mb-8 rounded-lg bg-gray-200 dark:bg-[#222] flex items-center px-4">
+                                        <div className="w-20 h-4 bg-gray-300 dark:bg-[#333] rounded"></div>
+                                        <div className="ml-auto w-8 h-8 rounded-full bg-gray-300 dark:bg-[#333]"></div>
                                     </div>
 
-                                    {/* Dynamic Columns */}
-                                    {Array.from({ length: activeCheckpoint === 'mobile' ? 2 : activeCheckpoint === 'tablet' ? 4 : 4 }).map((_, i) => (
-                                        <div
-                                            key={i}
-                                            className={`h-24 rounded-lg flex items-center justify-center text-xs font-medium bg-gray-100 text-gray-500 dark:bg-[#222] dark:text-gray-500`}
-                                            style={{
-                                                // Simple span logic simulation
-                                                gridColumn: activeCheckpoint === 'mobile' ? 'span 2' :
-                                                    activeCheckpoint === 'tablet' ? 'span 4' :
-                                                        'span 3' // 12 columns / 4 items = 3 span
-                                            }}
-                                        >
-                                            Content {i + 1}
+                                    {/* Grid Layout Content */}
+                                    <div
+                                        style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: `repeat(${currentConfig.columns}, 1fr)`,
+                                            gap: `${currentConfig.gutter}px`
+                                        }}
+                                    >
+                                        <div className={`col-span-full h-32 rounded-xl mb-6 flex items-center justify-center text-sm font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400`}>
+                                            Hero Section (Full Width)
                                         </div>
-                                    ))}
 
-                                    {Array.from({ length: 12 }).map((_, i) => (
-                                        <div
-                                            key={`small-${i}`}
-                                            className={`h-12 rounded bg-gray-50 dark:bg-[#1a1a1a] border border-dashed border-gray-200 dark:border-[#333]`}
-                                            style={{ gridColumn: 'span 1' }}
-                                        />
-                                    ))}
+                                        {/* Dynamic Columns */}
+                                        {Array.from({ length: activeCheckpoint === 'mobile' ? 2 : activeCheckpoint === 'tablet' ? 4 : 4 }).map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className={`h-24 rounded-lg flex items-center justify-center text-xs font-medium bg-gray-100 text-gray-500 dark:bg-[#222] dark:text-gray-500`}
+                                                style={{
+                                                    // Simple span logic simulation
+                                                    gridColumn: activeCheckpoint === 'mobile' ? 'span 2' :
+                                                        activeCheckpoint === 'tablet' ? 'span 4' :
+                                                            'span 3' // 12 columns / 4 items = 3 span
+                                                }}
+                                            >
+                                                Content {i + 1}
+                                            </div>
+                                        ))}
+
+                                        {Array.from({ length: 12 }).map((_, i) => (
+                                            <div
+                                                key={`small-${i}`}
+                                                className={`h-12 rounded bg-gray-50 dark:bg-[#1a1a1a] border border-dashed border-gray-200 dark:border-[#333]`}
+                                                style={{ gridColumn: 'span 1' }}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
-                    <StatusMessage message="설정하신 그리드 시스템이 프리뷰에 즉시 반영됩니다." />
+                        </section>
+                        <StatusMessage message="설정하신 그리드 시스템이 프리뷰에 즉시 반영됩니다." />
+                    </div>
                 </div>
             </div>
         </div>

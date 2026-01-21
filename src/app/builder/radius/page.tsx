@@ -6,7 +6,8 @@ import { useBuilderStore } from '@/stores/useBuilderStore';
 import { useTokenStore } from '@/stores/useTokenStore';
 import RadiusVisualizer from '@/components/builder/RadiusVisualizer';
 import StatusMessage from '@/components/builder/StatusMessage';
-import { RotateCcw, Circle, Layers, ShoppingBag, ArrowRight, Image as ImageIcon } from 'lucide-react';
+import PageHeader from '@/components/builder/PageHeader';
+import { Circle, Layers, ShoppingBag, ArrowRight, Image as ImageIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function RadiusPage() {
@@ -22,25 +23,11 @@ export default function RadiusPage() {
 
     return (
         <div className="pb-20">
-            {/* Header */}
-            <div className="mb-10 flex items-center justify-between">
-                <div>
-                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>곡률</h2>
-                    <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        UI 요소의 모서리 둥글기를 정의하여 디자인의 부드러움과 날카로움을 조절하세요.
-                    </p>
-                </div>
-                <button
-                    onClick={resetRadius}
-                    className={`flex items-center px-3 py-1.5 text-sm font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
-                        ? 'bg-[#191919] ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
-                        : 'bg-white ring-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
-                >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    초기화
-                </button>
-            </div>
+            <PageHeader
+                title="곡률"
+                description="UI 요소의 모서리 둥글기를 정의하여 디자인의 부드러움과 날카로움을 조절하세요."
+                onReset={resetRadius}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* LEFT COLUMN: Configuration */}
@@ -92,7 +79,7 @@ export default function RadiusPage() {
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-8">
                     <div className="sticky top-6 space-y-4">
-                        <section className={`rounded-2xl ring-1 ring-inset transition-colors overflow-hidden relative ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
+                        <section className={`rounded-2xl ring-2 ring-inset transition-colors overflow-hidden relative ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
                             <div className="flex items-center justify-between p-6 pb-0">
                                 <div className="flex items-center gap-2 text-purple-500">
                                     <Layers className="w-5 h-5" />
@@ -222,6 +209,7 @@ export default function RadiusPage() {
                                 </div>
                             </div>
                         </section>
+
                         <StatusMessage message="설정하신 곡률이 프리뷰에 즉시 반영됩니다." />
                     </div>
                 </div>
@@ -229,3 +217,4 @@ export default function RadiusPage() {
         </div>
     );
 }
+

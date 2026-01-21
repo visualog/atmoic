@@ -6,7 +6,8 @@ import { useBuilderStore } from '@/stores/useBuilderStore';
 import { useTokenStore } from '@/stores/useTokenStore';
 import TypeScaleVisualizer from '@/components/builder/TypeScaleVisualizer';
 import StatusMessage from '@/components/builder/StatusMessage';
-import { Check, RotateCcw, Layers } from 'lucide-react';
+import PageHeader from '@/components/builder/PageHeader';
+import { Check, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Helper to generate a random ID
@@ -14,7 +15,7 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 
 export default function TypographyPage() {
     const { selectedFont, setSelectedFont, typeScale, resetTypeScale, generateTypeScale } = useTypographyStore();
-    const { isDarkMode } = useBuilderStore();
+    const { isDarkMode, setExportModalOpen } = useBuilderStore();
     const { addToken, removeToken, getTokensByType } = useTokenStore();
     const [viewport, setViewport] = React.useState<'mobile' | 'desktop'>('desktop');
 
@@ -64,24 +65,11 @@ export default function TypographyPage() {
     return (
         <div className="pb-20">
             {/* Page Header */}
-            <div className="mb-10 flex items-center justify-between">
-                <div>
-                    <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>타이포그래피</h2>
-                    <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        폰트 패밀리와 타입 스케일을 선택하여 일관된 타이포그래피 시스템을 구축하세요.
-                    </p>
-                </div>
-                <button
-                    onClick={resetTypeScale}
-                    className={`flex items-center px-3 py-1.5 text-sm font-medium ring-1 ring-inset rounded-lg transition-colors ${isDarkMode
-                        ? 'bg-[#191919] ring-[#2e2e2e] text-gray-300 hover:bg-[#222222]'
-                        : 'bg-white ring-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
-                >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    초기화
-                </button>
-            </div>
+            <PageHeader
+                title="타이포그래피"
+                description="폰트 패밀리와 타입 스케일을 선택하여 일관된 타이포그래피 시스템을 구축하세요."
+                onReset={resetTypeScale}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -236,7 +224,7 @@ export default function TypographyPage() {
                 {/* RIGHT COLUMN: Live Preview */}
                 <div className="lg:col-span-5">
                     <div className="sticky top-6 space-y-4">
-                        <section className={`rounded-2xl ring-1 ring-inset transition-colors overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
+                        <section className={`rounded-2xl ring-2 ring-inset transition-colors overflow-hidden ${isDarkMode ? 'bg-[#191919] ring-[#222222]' : 'bg-gray-50 ring-gray-200'}`}>
                             <div className="flex items-center justify-between p-6 pb-0">
                                 <div className="flex items-center gap-2 text-purple-500">
                                     <Layers className="w-5 h-5" />
@@ -334,7 +322,7 @@ export default function TypographyPage() {
                                 {/* 3. Table Header / Tags Sample */}
                                 <div className={`rounded-lg ring-1 ring-inset overflow-hidden ${isDarkMode ? 'ring-[#2e2e2e]' : 'ring-gray-200'}`}>
                                     <div className={`px-4 py-2 ${isDarkMode ? 'bg-[#2e2e2e]' : 'bg-gray-100'}`}>
-                                        <div className="grid grid-cols-[1fr_60px_100px] gap-4 items-center">
+                                        <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center">
                                             <span
                                                 style={{ fontSize: `${typeScale.find(t => t.id === 'label-sm')?.size || 12}px`, fontWeight: 600, lineHeight: 1.4, letterSpacing: `${(typeScale.find(t => t.id === 'label-sm')?.letterSpacing || 0) / 100}em` }}
                                                 className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}
@@ -356,7 +344,7 @@ export default function TypographyPage() {
                                         </div>
                                     </div>
                                     <div className={`px-4 py-3 ${isDarkMode ? 'bg-[#222222]' : 'bg-white'}`}>
-                                        <div className="grid grid-cols-[1fr_60px_100px] gap-4 items-center">
+                                        <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center">
                                             <span
                                                 style={{ fontSize: `${typeScale.find(t => t.id === 'body-sm')?.size || 14}px`, fontWeight: 400, letterSpacing: `${(typeScale.find(t => t.id === 'body-sm')?.letterSpacing || 0) / 100}em` }}
                                                 className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}
@@ -380,9 +368,8 @@ export default function TypographyPage() {
                                 </div>
                             </div>
                         </section>
+                        <StatusMessage message="선택하신 폰트가 프리뷰에 즉시 반영됩니다." />
                     </div>
-
-                    <StatusMessage message="선택하신 폰트가 프리뷰에 즉시 반영됩니다." />
                 </div>
             </div>
         </div>

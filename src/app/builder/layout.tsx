@@ -23,9 +23,14 @@ export default function BuilderLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const [isExportOpen, setIsExportOpen] = useState(false);
     const { tokens } = useTokenStore();
-    const { selectedId, isDarkMode, toggleDarkMode } = useBuilderStore();
+    const {
+        selectedId,
+        isDarkMode,
+        toggleDarkMode,
+        isExportModalOpen,
+        setExportModalOpen
+    } = useBuilderStore();
 
     // Get breadcrumb info
     const breadcrumb = BREADCRUMB_MAP[pathname] || { category: '파운데이션', page: '색상' };
@@ -60,10 +65,6 @@ export default function BuilderLayout({
                         >
                             {isDarkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
                         </button>
-                        <button className="flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                            <Download className="w-4 h-4 mr-2" />
-                            저장
-                        </button>
                     </div>
                 </div>
 
@@ -92,8 +93,8 @@ export default function BuilderLayout({
 
             {/* Export Modal */}
             <ExportModal
-                isOpen={isExportOpen}
-                onClose={() => setIsExportOpen(false)}
+                isOpen={isExportModalOpen}
+                onClose={() => setExportModalOpen(false)}
                 tokens={tokens}
             />
         </div>
